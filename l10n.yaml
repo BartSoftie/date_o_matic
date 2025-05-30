@@ -1,0 +1,6 @@
+synthetic-package: false
+arb-dir: lib/l10n
+output-dir: lib/l10n/generated/i18n
+template-arb-file: intl_en.arb
+output-localization-file: messages_localizations.dart
+output-class: DateOMaticLocalizations

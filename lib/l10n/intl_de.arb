@@ -1,0 +1,11 @@
+{
+    "@@locale": "de",
+    "about": "Über DateOMatic",
+    "@about": {
+        "type": "text"
+    },
+    "openSourceComponents": "Open Source Komponenten",
+    "@openSourceComponents": {
+        "type": "text"
+    }
+}
