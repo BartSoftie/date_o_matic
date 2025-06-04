@@ -27,13 +27,16 @@ class BtAdvertisingService {
   /// Starts advertising our dating service and tells listeners that we are here.
   void startAdvertising() async {
     final peripheralManager = PeripheralManager();
+    final authorized = await peripheralManager.authorize();
     final state = peripheralManager.state;
-    await peripheralManager.removeAllServices();
     if (state != BluetoothLowEnergyState.poweredOn) {
-      debugPrint('Bluetooth not powered on');
+      debugPrint('Bluetooth not powered on. Curent state $state');
       //TODO: report error
       return;
     }
+    debugPrint('Bluetooth powered on. Removing services...');
+    await peripheralManager.removeAllServices();
+    debugPrint('  ...done');
     final myDob = DateTime(1973, 5, 28);
     final whatIWant = WhatIWant(
       gender: Gender.female,
@@ -70,6 +73,7 @@ class BtAdvertisingService {
     try {
       await peripheralManager.startAdvertising(advertisement);
       _advertising = true;
+      debugPrint('Advertising now...');
     } catch (e) {
       debugPrint('startAdvertising failed: $e');
     }
