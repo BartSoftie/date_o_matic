@@ -6,6 +6,7 @@ import 'package:date_o_matic/themes/dark_theme.dart';
 import 'package:date_o_matic/themes/light_theme.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -47,6 +48,7 @@ class DateOMaticApp extends StatelessWidget {
 
 Future<void> _initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
