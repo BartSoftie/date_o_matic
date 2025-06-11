@@ -1,10 +1,15 @@
+import 'dart:ui';
+
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:date_o_matic/presentation/main_page/my_home_page.dart';
 import 'package:date_o_matic/themes/dark_theme.dart';
 import 'package:date_o_matic/themes/light_theme.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   await _initializeApp();
@@ -42,12 +47,18 @@ class DateOMaticApp extends StatelessWidget {
 
 Future<void> _initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //TODO: enable firebase crashlytics
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-  // // Pass all uncaught "fatal" errors from the framework to Crashlytics
-  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 
   await Permission.bluetoothScan.request();
   await Permission.bluetoothConnect.request();
