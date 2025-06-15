@@ -31,10 +31,18 @@
             android:value="2" />
     </application>
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
+
+    <!-- Old bluetooth permissions (Android 11 and older) -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <!-- Location permissions (often required for bluetooth scan on older versions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- New bluetooth permissions for Android 12 (API Level 31) and higher -->
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+
 </manifest>

@@ -62,7 +62,11 @@ Future<void> _initializeApp() async {
     return true;
   };
 
-  await Permission.bluetoothScan.request();
-  await Permission.bluetoothConnect.request();
-  await Permission.bluetoothAdvertise.request();
+  PermissionStatus bluetoothStatus = await Permission.bluetooth.request();
+  PermissionStatus bluetoothScanStatus =
+      await Permission.bluetoothScan.request();
+  PermissionStatus bluetoothConnectStatus =
+      await Permission.bluetoothConnect.request();
+  PermissionStatus bluetoothAdvertiseStatus =
+      await Permission.bluetoothAdvertise.request();
 }

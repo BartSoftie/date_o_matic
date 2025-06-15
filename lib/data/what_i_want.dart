@@ -2,11 +2,14 @@ import 'dart:typed_data';
 
 import 'package:date_o_matic/data/gender.dart';
 import 'package:date_o_matic/data/relationship_type.dart';
+import 'package:logging/logging.dart';
 
 /// This class contains a description of what this person is looking for. It
 /// does not contain any personal data and will be send to others on request to
 /// do the matching process.
 class WhatIWant {
+  final _log = Logger('BtState');
+
   /// The [RelationshipType] a person is looking for.
   late final RelationshipType relationshipType;
 
@@ -28,13 +31,33 @@ class WhatIWant {
 
   /// Crates an instance of this type from the given packed [Uint8List].
   WhatIWant.fromUint8List(Uint8List data) {
-    var bytes =
-        ByteData.view(data.buffer, data.offsetInBytes, data.lengthInBytes);
-    //TODO: range check the following two
-    relationshipType = RelationshipType.values[bytes.getUint8(0)];
-    gender = Gender.values[bytes.getUint8(1)];
-    bornFrom = DateTime.fromMicrosecondsSinceEpoch(bytes.getInt64(2));
-    bornTill = DateTime.fromMicrosecondsSinceEpoch(bytes.getInt64(10));
+    if (data.lengthInBytes > 0) {
+      var bytes =
+          ByteData.view(data.buffer, data.offsetInBytes, data.lengthInBytes);
+      _log.shout('WhatIWant: received data ${bytes.toString()}');
+
+      if (data.lengthInBytes == 18) {
+        relationshipType = RelationshipType.values[bytes.getUint8(0)];
+        gender = Gender.values[bytes.getUint8(1)];
+        bornFrom = DateTime.fromMicrosecondsSinceEpoch(bytes.getInt64(2));
+        bornTill = DateTime.fromMicrosecondsSinceEpoch(bytes.getInt64(10));
+        _log.shout('WhatIWant: ${toString()}');
+      } else {
+        _log.shout('WhatIWant: invalid bytes length: ${bytes.lengthInBytes}');
+        //TODO: maybe use nullable here to avoid initialization if invalid input
+        relationshipType = RelationshipType.casual;
+        gender = Gender.diverse;
+        bornFrom = DateTime.now();
+        bornTill = DateTime.now();
+      }
+    } else {
+      _log.shout('WhatIWant: received 0 bytes');
+      //TODO: maybe use nullable here to avoid initialization if invalid input
+      relationshipType = RelationshipType.casual;
+      gender = Gender.diverse;
+      bornFrom = DateTime.now();
+      bornTill = DateTime.now();
+    }
   }
 
   /// Returns this object as packed [Uint8List].
