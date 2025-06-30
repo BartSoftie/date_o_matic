@@ -24,6 +24,16 @@ class BtDiscoveryService {
           .contains(BtAdvertisingService.serviceUuid)) {
         if (_connectedTo != event.peripheral.uuid) {
           _connectedTo = event.peripheral.uuid;
+          _log.shout('Discovered service');
+          // adding service data currently leads to crash on android
+          // advertising not possible. maybe in the future.
+          // var wiwVal =
+          //     event.advertisement.serviceData[BtAdvertisingService.serviceUuid];
+          // _log.shout('Got ServiceData: $wiwVal');
+          // if (wiwVal != null) {
+          //   var wivV = WhatIWant.fromUint8List(wiwVal);
+          //   _log.shout('ServiceData value: $wivV');
+          // }
           await centralManager.connect(event.peripheral);
           _log.shout('Connected');
           var gatt = await centralManager.discoverGATT(event.peripheral);

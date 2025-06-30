@@ -6,7 +6,6 @@ import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:date_o_matic/data/gender.dart';
 import 'package:date_o_matic/data/relationship_type.dart';
 import 'package:date_o_matic/data/what_i_want.dart';
-import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 /// This service is responsible for the process of advertising our BLE service.
@@ -148,6 +147,7 @@ class BtAdvertisingService {
     _peripheralManager.addService(hereIAmService);
     final advertisement = Advertisement(
       serviceUUIDs: [serviceUuid],
+      //serviceData: {serviceUuid: whatIWant.asUint8List()},
       // name: 'Pixel 5',
       // manufacturerSpecificData: ManufacturerSpecificData(
       //   id: 0x1234, //TODO: we need our own company id here

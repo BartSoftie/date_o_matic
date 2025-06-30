@@ -51,6 +51,7 @@ Future<void> _initializeApp() async {
   await dotenv.load(fileName: '.env');
 
   await Firebase.initializeApp(
+    name: 'DateOMatic',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FlutterError.onError = (errorDetails) {
