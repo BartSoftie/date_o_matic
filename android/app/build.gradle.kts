@@ -32,7 +32,7 @@ android {
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         //minSdkVersion 23
         //minSdk 23 required by flutter_secure_storage
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         //minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

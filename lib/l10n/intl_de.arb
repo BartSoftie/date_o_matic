@@ -7,5 +7,9 @@
     "openSourceComponents": "Open Source Komponenten",
     "@openSourceComponents": {
         "type": "text"
+    },
+    "home": "Home",
+    "@home": {
+        "type": "text"
     }
 }

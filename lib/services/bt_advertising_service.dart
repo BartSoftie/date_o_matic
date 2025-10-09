@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:date_o_matic/data/gender.dart';
@@ -27,69 +26,26 @@ class BtAdvertisingService {
   static final gattCharacteristicsUuid =
       UUID.fromString('039c5faf-c609-46af-9a67-ce4e68c872d5');
 
+  /// Creates an instance of [BtAdvertisingService] and starts listening to
+  /// bluetooth peripheral state changes.
   BtAdvertisingService() {
     _stateChangedSubscription =
         _peripheralManager.stateChanged.listen((eventArgs) async {
+      //TODO: handle states correctly
       if (eventArgs.state == BluetoothLowEnergyState.unauthorized &&
           Platform.isAndroid) {
         await _peripheralManager.authorize();
-      }
-      //notifyListeners();
-    });
-    _characteristicReadRequestedSubscription = _peripheralManager
-        .characteristicReadRequested
-        .listen((eventArgs) async {
-      final central = eventArgs.central;
-      final characteristic = eventArgs.characteristic;
-      final request = eventArgs.request;
-      final offset = request.offset;
-      _log.info(
-          'Characteristic read requested: ${central.uuid}, ${characteristic.uuid}, $offset');
-      //notifyListeners();
-      final elements = List.generate(100, (i) => i % 256);
-      final value = Uint8List.fromList(elements);
-      final trimmedValue = value.sublist(offset);
-      await _peripheralManager.respondReadRequestWithValue(
-        request,
-        value: trimmedValue,
-      );
-    });
-    _characteristicWriteRequestedSubscription = _peripheralManager
-        .characteristicWriteRequested
-        .listen((eventArgs) async {
-      final central = eventArgs.central;
-      final characteristic = eventArgs.characteristic;
-      final request = eventArgs.request;
-      final offset = request.offset;
-      final value = request.value;
-      _log.info(
-          'Characteristic write requested: [${value.length}] ${central.uuid}, ${characteristic.uuid}, $offset, $value');
-      //notifyListeners();
-      await _peripheralManager.respondWriteRequest(request);
-    });
-    _characteristicNotifyStateChangedSubscription = _peripheralManager
-        .characteristicNotifyStateChanged
-        .listen((eventArgs) async {
-      final central = eventArgs.central;
-      final characteristic = eventArgs.characteristic;
-      final state = eventArgs.state;
-      _log.info(
-          'Characteristic notify state changed: ${central.uuid}, ${characteristic.uuid}, $state');
-      //notifyListeners();
-      // Write someting to the central when notify started.
-      if (state) {
-        final maximumNotifyLength =
-            await _peripheralManager.getMaximumNotifyLength(central);
-        final elements = List.generate(maximumNotifyLength, (i) => i % 256);
-        final value = Uint8List.fromList(elements);
-        await _peripheralManager.notifyCharacteristic(
-          central,
-          characteristic,
-          value: value,
-        );
+      } else if (eventArgs.state == BluetoothLowEnergyState.poweredOn) {
+      } else if (eventArgs.state == BluetoothLowEnergyState.poweredOff ||
+          eventArgs.state == BluetoothLowEnergyState.unsupported) {
+        //somehow we get unsupported on android if bt is powered off
       }
     });
   }
+
+  /// Returns `true` if we are allowed to advertise, else `false`.
+  bool get canAdvertise =>
+      _peripheralManager.state == BluetoothLowEnergyState.poweredOn;
 
   /// Returns `true` if the service is currently advertising, else `false`.
   bool get advertising => _advertising;
@@ -106,7 +62,7 @@ class BtAdvertisingService {
 
   /// Starts advertising our dating service and tells listeners that we are here.
   void startAdvertising() async {
-    if (_advertising) {
+    if (_advertising || !canAdvertise) {
       return;
     }
 
