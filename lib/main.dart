@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
-import 'package:date_o_matic/presentation/main_page/my_home_page.dart';
-import 'package:date_o_matic/services/permission_service.dart';
-import 'package:date_o_matic/themes/dark_theme.dart';
-import 'package:date_o_matic/themes/light_theme.dart';
+import 'package:date_o_matic/ui/main_page/main_page.dart';
+import 'package:date_o_matic/data/services/permission_service.dart';
+import 'package:date_o_matic/ui/themes/dark_theme.dart';
+import 'package:date_o_matic/ui/themes/light_theme.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -41,7 +41,7 @@ class DateOMaticApp extends StatelessWidget {
         Locale('en'),
         Locale('de'),
       ],
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MainPage(title: 'DateOMatic App'),
     );
   }
 }

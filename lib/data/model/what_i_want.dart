@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:date_o_matic/data/gender.dart';
-import 'package:date_o_matic/data/relationship_type.dart';
+import 'package:date_o_matic/data/model/gender.dart';
+import 'package:date_o_matic/data/model/relationship_type.dart';
 import 'package:logging/logging.dart';
 
 /// This class contains a description of what this person is looking for. It

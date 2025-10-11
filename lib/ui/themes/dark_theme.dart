@@ -1,4 +1,4 @@
-import 'package:date_o_matic/themes/button_styles.dart';
+import 'package:date_o_matic/ui/themes/button_styles.dart';
 import 'package:flutter/material.dart';
 
 /// The default background color for cards, dialogs, etc.

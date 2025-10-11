@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
-import 'package:date_o_matic/data/gender.dart';
-import 'package:date_o_matic/data/relationship_type.dart';
-import 'package:date_o_matic/data/what_i_want.dart';
+import 'package:date_o_matic/data/model/gender.dart';
+import 'package:date_o_matic/data/model/relationship_type.dart';
+import 'package:date_o_matic/data/model/what_i_want.dart';
 import 'package:logging/logging.dart';
 
 /// This service is responsible for the process of advertising our BLE service.
@@ -63,6 +63,8 @@ class BtAdvertisingService {
   /// Starts advertising our dating service and tells listeners that we are here.
   void startAdvertising() async {
     if (_advertising || !canAdvertise) {
+      _log.shout(
+          '... not advertising. Already advertising or cannot advertise.');
       return;
     }
 
