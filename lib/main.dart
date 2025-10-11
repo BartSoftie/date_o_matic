@@ -35,6 +35,7 @@ class DateOMaticApp extends StatelessWidget {
       title: 'DateOMatic',
       theme: lightTheme,
       darkTheme: darkTheme,
+      // themeMode: ThemeMode.system,
       localizationsDelegates: localizationsDelegates,
       supportedLocales: const [
         //the first entry is the default if the system locale doesn't match any in the list

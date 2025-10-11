@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:date_o_matic/data/services/bt_advertising_service.dart';
 import 'package:date_o_matic/data/services/bt_discovery_service.dart';
 import 'package:flutter/foundation.dart';
@@ -7,42 +5,33 @@ import 'package:logging/logging.dart';
 
 /// ViewModel for the [MainPage]
 class MainPageViewModel extends ChangeNotifier {
-  final _log = Logger('BtState');
-  late StreamSubscription _streamSubscription;
+  //final _log = Logger('BtState');
+  //TODO: pass them as parameters
   final _advertisingService = BtAdvertisingService();
   final _discoveryService = BtDiscoveryService();
-  String _logText = '';
 
-  /// Gets the log text that is shown in the UI
+  /// Creates an instance of this class
   MainPageViewModel() {
+    //TODO: set the root log level somewhwere else
     Logger.root.level = Level.WARNING;
-    _streamSubscription = _log.onRecord.listen((record) {
-      _logText += '${record.level.name}: ${record.time}: ${record.message}\n';
-      notifyListeners();
-    });
   }
-  //   @override
-  // void dispose() {
-  //   _advertisingService.dispose();
-  //   _discoveryService.dispose();
-  //   _streamSubscription.cancel();
-  //   super.dispose();
-  // }
 
-  String get logText => _logText;
-
+  /// Starts advertising our service
   void startAdvertising() {
     _advertisingService.startAdvertising();
   }
 
+  /// Stops advertising our service
   void stopAdvertising() {
     _advertisingService.stopAdvertising();
   }
 
+  /// Starts discovering other devices advertising our service
   void startDiscovery() {
     _discoveryService.startListening();
   }
 
+  /// Stops discovering other devices advertising our service
   void stopDiscovery() {
     _discoveryService.stopListening();
   }
