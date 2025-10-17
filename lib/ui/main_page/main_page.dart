@@ -27,7 +27,27 @@ class MainPage extends StatelessWidget {
             ),
             body: Center(
               child: Column(
-                children: [],
+                children: [
+                  Expanded(
+                    // SingleChildScrollView makes its child scrollable if the content
+                    // overflows its available space.
+                    child: SingleChildScrollView(
+                      // Padding added for better visual spacing of the log text.
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        viewModel.discoveredProfiles
+                            .map((profile) => profile.toString())
+                            .join('\n\n'),
+                        // maxLines: null allows the Text widget to use as many lines
+                        // as needed, combined with SingleChildScrollView for scrolling.
+                        maxLines: null,
+                        // softWrap: true ensures that the text wraps to the next line
+                        // instead of overflowing horizontally.
+                        softWrap: true,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             bottomNavigationBar: BottomNavigationBar(

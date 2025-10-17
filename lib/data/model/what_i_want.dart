@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/relationship_type.dart';
 import 'package:logging/logging.dart';
@@ -9,6 +11,10 @@ import 'package:logging/logging.dart';
 /// do the matching process.
 class WhatIWant {
   final _log = Logger('BtState');
+
+  /// A unique identifier of the partner.
+  // TODO: generate unique UUID per device
+  late int id = Random().nextInt(1 << 32);
 
   /// The [RelationshipType] a person is looking for.
   late final RelationshipType relationshipType;
@@ -36,11 +42,12 @@ class WhatIWant {
           ByteData.view(data.buffer, data.offsetInBytes, data.lengthInBytes);
       _log.shout('WhatIWant: received data ${bytes.toString()}');
 
-      if (data.lengthInBytes == 18) {
-        relationshipType = RelationshipType.values[bytes.getUint8(0)];
-        gender = Gender.values[bytes.getUint8(1)];
-        bornFrom = DateTime.fromMicrosecondsSinceEpoch(bytes.getInt64(2));
-        bornTill = DateTime.fromMicrosecondsSinceEpoch(bytes.getInt64(10));
+      if (data.lengthInBytes == 26) {
+        id = bytes.getUint64(0);
+        relationshipType = RelationshipType.values[bytes.getUint8(8)];
+        gender = Gender.values[bytes.getUint8(9)];
+        bornFrom = DateTime.fromMicrosecondsSinceEpoch(bytes.getInt64(10));
+        bornTill = DateTime.fromMicrosecondsSinceEpoch(bytes.getInt64(18));
         _log.shout('WhatIWant: ${toString()}');
       } else {
         _log.shout('WhatIWant: invalid bytes length: ${bytes.lengthInBytes}');
@@ -62,11 +69,12 @@ class WhatIWant {
 
   /// Returns this object as packed [Uint8List].
   Uint8List asUint8List() {
-    var bytes = ByteData(18);
-    bytes.setUint8(0, relationshipType.index);
-    bytes.setUint8(1, gender.index);
-    bytes.setInt64(2, bornFrom.microsecondsSinceEpoch);
-    bytes.setInt64(10, bornTill.microsecondsSinceEpoch);
+    var bytes = ByteData(26);
+    bytes.setUint64(0, id);
+    bytes.setUint8(8, relationshipType.index);
+    bytes.setUint8(9, gender.index);
+    bytes.setInt64(10, bornFrom.microsecondsSinceEpoch);
+    bytes.setInt64(18, bornTill.microsecondsSinceEpoch);
     return bytes.buffer.asUint8List();
   }
 

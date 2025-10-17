@@ -19,12 +19,16 @@ class UserProfileRepository {
   StreamSubscription? _discoverySubscription;
   final StreamController<bool> _isOnlineStreamController =
       StreamController<bool>.broadcast();
+  final StreamController<WhatIWant> _profileDiscoveredController =
+      StreamController<WhatIWant>.broadcast();
+
   bool _isListening = false;
   bool _isAdvertising = false;
 
   bool _isConnected = false;
 
-  final HashSet<Peripheral> _connectedPeripherals = HashSet<Peripheral>();
+  //TODO: Peripheral uuid and hash is no constant. Use own Id in Data.
+  final Map<int, Peripheral> _connectedPeripherals = {};
   final List<WhatIWant> _whatTheyWantList = [];
 
   /// Creates an instance of this class.
@@ -46,56 +50,59 @@ class UserProfileRepository {
 
     _discoverySubscription =
         _btDiscoveryService.discoveredPeripherals.listen((event) async {
-      if (_connectedPeripherals.add(event)) {
-        final centralManager = CentralManager();
-        _log.shout('Connecting to discovered peripheral ${event.uuid}');
-        if (_isConnected) {
-          _log.shout(
-              'Already connected to a peripheral, skipping connection to ${event.uuid}');
-          return;
-        }
+      final centralManager = CentralManager();
+      _log.shout('Connecting to discovered peripheral ${event.uuid}');
+      if (_isConnected) {
+        _log.shout(
+            'Already connected to a peripheral, skipping connection to ${event.uuid}');
+        return;
+      }
 
-        try {
-          await centralManager.connect(event);
-          _isConnected = true;
+      try {
+        await centralManager.connect(event);
+        _isConnected = true;
 
-          final services = await centralManager.discoverGATT(event);
-          for (var service in services) {
-            if (service.uuid == BtAdvertisingService.serviceUuid) {
-              _log.shout(
-                  'Connected to peripheral ${event.uuid}, discovering characteristics');
-              for (var characteristic in service.characteristics) {
-                if (characteristic.uuid ==
-                    BtAdvertisingService.gattCharacteristicsUuid) {
-                  _log.shout(
-                      'Reading characteristic from peripheral ${event.uuid}');
-                  final data = await centralManager.readCharacteristic(
-                      event, characteristic);
+        final services = await centralManager.discoverGATT(event);
+        for (var service in services) {
+          if (service.uuid == BtAdvertisingService.serviceUuid) {
+            _log.shout(
+                'Connected to peripheral ${event.uuid}, discovering characteristics');
+            for (var characteristic in service.characteristics) {
+              if (characteristic.uuid ==
+                  BtAdvertisingService.gattCharacteristicsUuid) {
+                _log.shout(
+                    'Reading characteristic from peripheral ${event.uuid}');
+                final data = await centralManager.readCharacteristic(
+                    event, characteristic);
 
-                  final whatTheyWant = WhatIWant.fromUint8List(data);
+                final whatTheyWant = WhatIWant.fromUint8List(data);
+                if (!_connectedPeripherals.containsKey(whatTheyWant.id)) {
+                  _connectedPeripherals[whatTheyWant.id] = event;
                   _whatTheyWantList.add(whatTheyWant);
+                  _profileDiscoveredController.add(whatTheyWant);
                   _log.shout('Value: $whatTheyWant');
-                  break;
                 }
+
+                break;
               }
-              break;
             }
+            break;
           }
+        }
+      } catch (e) {
+        _log.severe(
+            'Error while connecting/reading from peripheral ${event.uuid}: $e');
+      } finally {
+        try {
+          await centralManager.disconnect(event);
         } catch (e) {
           _log.severe(
-              'Error while connecting/reading from peripheral ${event.uuid}: $e');
+              'Error while disconnecting from peripheral ${event.uuid}: $e');
         } finally {
-          try {
-            await centralManager.disconnect(event);
-          } catch (e) {
-            _log.severe(
-                'Error while disconnecting from peripheral ${event.uuid}: $e');
-          } finally {
-            _isConnected = false;
-          }
+          _isConnected = false;
         }
-        _log.shout('Disconnected from peripheral ${event.uuid}');
       }
+      _log.shout('Disconnected from peripheral ${event.uuid}');
     });
 
     _advertisingStateSubscription =
@@ -114,6 +121,8 @@ class UserProfileRepository {
   /// Disposes the resources used by this repository.
   //TODO: dispose from ioc
   void dispose() {
+    _isOnlineStreamController.close();
+    _profileDiscoveredController.close();
     _discoveryStateSubscription?.cancel();
     _advertisingStateSubscription?.cancel();
     _discoverySubscription?.cancel();
@@ -129,6 +138,10 @@ class UserProfileRepository {
 
   /// Returns an unmodifiable list of discovered profiles that match my profile.
   List<WhatIWant> get whatTheyWantList => List.unmodifiable(_whatTheyWantList);
+
+  ///
+  Stream<WhatIWant> get profileDiscovered =>
+      _profileDiscoveredController.stream;
 
   /// Toggles the online status of the user.
   /// If the user is currently online, they will go offline and vice versa.
