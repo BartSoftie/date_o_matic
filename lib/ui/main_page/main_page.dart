@@ -1,5 +1,5 @@
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
-import 'package:date_o_matic/ui/debug_page/debug_page.dart';
+import 'package:date_o_matic/ui/debug_page/log_page.dart';
 import 'package:flutter/material.dart';
 import 'package:date_o_matic/ui/main_page/main_page_view_model.dart';
 import 'package:provider/provider.dart';
@@ -54,7 +54,7 @@ class MainPage extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => DebugPage(
+                            builder: (context) => LogPage(
                                 title: DateOMaticLocalizations.of(context)!
                                     .debugPageTitle)));
                     break;
@@ -63,14 +63,17 @@ class MainPage extends StatelessWidget {
               },
             ),
             floatingActionButton: FloatingActionButton(
+              shape: const CircleBorder(),
               onPressed: () {
                 viewModel.toggleOnline();
               },
               tooltip: 'Toggle Online/Offline',
               //TODO: change icon based on online/offline state and do some nice animation
-              child: Icon(Icons.heart_broken,
+              child: Icon(Icons.favorite,
                   color: viewModel.isOnline ? Colors.red : Colors.grey),
             ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
           );
         },
       ),

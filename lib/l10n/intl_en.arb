@@ -39,5 +39,9 @@
     "stopDiscovery": "Stop Discovery",
     "@stopDiscovery": {
         "type": "text"
+    },
+    "clearLog": "Clear Log",
+    "@clearLog": {
+        "type": "text"
     }
 }

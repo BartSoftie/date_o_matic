@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
-import 'package:date_o_matic/data/model/what_i_want.dart';
 import 'package:date_o_matic/data/services/bt_advertising_service.dart';
-import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
@@ -12,7 +10,6 @@ import 'package:logging/logging.dart';
 @injectable
 class BtDiscoveryService {
   final _log = Logger('BtState');
-  UUID? _connectedTo;
   StreamSubscription? _discoverySubscription;
   bool _isListening = false;
 
@@ -21,6 +18,9 @@ class BtDiscoveryService {
     ..add(false); //CentralManager().state == BluetoothLowEnergyState.poweredOn;
   final StreamController<bool> _isListeningStreamController =
       StreamController<bool>.broadcast()..add(false);
+
+  final StreamController<Peripheral> _discoveredPeripheralStreamController =
+      StreamController<Peripheral>.broadcast();
 
   /// Stops listening and frees all resources.
   //TODO: dispose from ioc
@@ -38,6 +38,10 @@ class BtDiscoveryService {
 
   /// Returns `true` if we are currently listening for nearby devices, else `false`.
   Stream<bool> get isListening => _isListeningStreamController.stream;
+
+  /// Returns a stream of discovered peripherals.
+  Stream<Peripheral> get discoveredPeripherals =>
+      _discoveredPeripheralStreamController.stream;
 
   /// Starts listening for nearby devices advertising our service.
   void startListening() async {
@@ -58,7 +62,9 @@ class BtDiscoveryService {
         //if (_connectedTo == null) {
         //event.peripheral.uuid) {
         //_connectedTo = event.peripheral.uuid;
-        _log.shout('Discovered service');
+        _log.finest(
+            'Discovered service: ${event.peripheral.uuid}, RSSI: ${event.rssi}');
+        _discoveredPeripheralStreamController.add(event.peripheral);
         // adding service data currently leads to crash on android
         // advertising not possible. maybe in the future.
         // var wiwVal =
@@ -68,26 +74,26 @@ class BtDiscoveryService {
         //   var wivV = WhatIWant.fromUint8List(wiwVal);
         //   _log.shout('ServiceData value: $wivV');
         // }
-        //TODO: multiple connections should work
-        await centralManager.connect(event.peripheral);
-        _log.shout('Connected');
-        var gatt = await centralManager.discoverGATT(event.peripheral);
-        if (gatt.isNotEmpty) {
-          _log.shout('not empty');
-          //TODO: can I filter for g.uuid? make this more robust. provide orElse to firstWhere
-          var service = gatt
-              .firstWhere((g) => g.uuid == BtAdvertisingService.serviceUuid);
-          var characteristics = service.characteristics.firstWhere(
-              (c) => c.uuid == BtAdvertisingService.gattCharacteristicsUuid);
-          var value = await centralManager.readCharacteristic(
-              event.peripheral, characteristics);
+        // //TODO: multiple connections should work
+        // await centralManager.connect(event.peripheral);
+        // _log.shout('Connected');
+        // var gatt = await centralManager.discoverGATT(event.peripheral);
+        // if (gatt.isNotEmpty) {
+        //   _log.shout('not empty');
+        //   //TODO: can I filter for g.uuid? make this more robust. provide orElse to firstWhere
+        //   var service = gatt
+        //       .firstWhere((g) => g.uuid == BtAdvertisingService.serviceUuid);
+        //   var characteristics = service.characteristics.firstWhere(
+        //       (c) => c.uuid == BtAdvertisingService.gattCharacteristicsUuid);
+        //   var value = await centralManager.readCharacteristic(
+        //       event.peripheral, characteristics);
 
-          _log.shout('Got Charachteristics: $value');
-          var whatHeWants = WhatIWant.fromUint8List(value);
-          _log.shout('Value: $whatHeWants');
-        }
-        await centralManager.disconnect(event.peripheral);
-        _log.shout('Disconnected');
+        //   _log.shout('Got Charachteristics: $value');
+        //   var whatHeWants = WhatIWant.fromUint8List(value);
+        //   _log.shout('Value: $whatHeWants');
+        // }
+        // await centralManager.disconnect(event.peripheral);
+        //_log.shout('Disconnected');
 
         // then((value) {
         //   _log.shout('Connected');
@@ -116,6 +122,5 @@ class BtDiscoveryService {
     _isListeningStreamController.add(false);
     await centralManager.stopDiscovery();
     _discoverySubscription?.cancel();
-    _connectedTo = null;
   }
 }

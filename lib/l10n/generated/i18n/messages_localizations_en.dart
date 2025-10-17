@@ -37,4 +37,7 @@ class DateOMaticLocalizationsEn extends DateOMaticLocalizations {
 
   @override
   String get stopDiscovery => 'Stop Discovery';
+
+  @override
+  String get clearLog => 'Clear Log';
 }

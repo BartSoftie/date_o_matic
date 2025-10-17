@@ -158,6 +158,12 @@ abstract class DateOMaticLocalizations {
   /// In en, this message translates to:
   /// **'Stop Discovery'**
   String get stopDiscovery;
+
+  /// No description provided for @clearLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Log'**
+  String get clearLog;
 }
 
 class _DateOMaticLocalizationsDelegate

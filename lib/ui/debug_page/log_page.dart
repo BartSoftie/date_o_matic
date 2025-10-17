@@ -1,23 +1,23 @@
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
-import 'package:date_o_matic/ui/debug_page/debug_page_view_model.dart';
+import 'package:date_o_matic/ui/debug_page/log_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /// A page that shows log messages
-class DebugPage extends StatelessWidget {
-  final DebugPageViewModel _viewModel = DebugPageViewModel();
+class LogPage extends StatelessWidget {
+  final LogPageViewModel _viewModel = LogPageViewModel();
 
   /// The title that is shown in the app bar
   final String title;
 
   /// Creates an instance of this class
-  DebugPage({super.key, required this.title});
+  LogPage({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: Consumer<DebugPageViewModel>(
+      child: Consumer<LogPageViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(
             appBar: AppBar(
@@ -30,26 +30,9 @@ class DebugPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       TextButton(
-                          onPressed: () => viewModel.startAdvertising(),
-                          child: Text(DateOMaticLocalizations.of(context)!
-                              .startAdvertising)),
-                      TextButton(
-                          onPressed: () => viewModel.stopAdvertising(),
-                          child: Text(DateOMaticLocalizations.of(context)!
-                              .stopAdvertising)),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      TextButton(
-                          onPressed: () => viewModel.startDiscovery(),
-                          child: Text(DateOMaticLocalizations.of(context)!
-                              .startDiscovery)),
-                      TextButton(
-                          onPressed: () => viewModel.stopDiscovery(),
-                          child: Text(DateOMaticLocalizations.of(context)!
-                              .stopDiscovery)),
+                          onPressed: () => viewModel.clearLog(),
+                          child: Text(
+                              DateOMaticLocalizations.of(context)!.clearLog)),
                     ],
                   ),
                   Expanded(
