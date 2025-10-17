@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 /// ViewModel for the [LogPage]
-class LogPageViewModel extends ChangeNotifier {
+class DebugPageViewModel extends ChangeNotifier {
   String _logText = '';
   late final StreamSubscription _streamSubscription;
   //TODO: pass them as parameters
@@ -14,7 +14,7 @@ class LogPageViewModel extends ChangeNotifier {
   final _discoveryService = BtDiscoveryService();
 
   /// Creates an instance of this class
-  LogPageViewModel() {
+  DebugPageViewModel() {
     _streamSubscription = Logger.root.onRecord.listen((record) {
       _logText += '${record.level.name}: ${record.time}: ${record.message}\n';
       notifyListeners();

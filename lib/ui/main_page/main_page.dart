@@ -1,4 +1,5 @@
-import 'package:date_o_matic/ui/log_page/log_page.dart';
+import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
+import 'package:date_o_matic/ui/debug_page/debug_page.dart';
 import 'package:flutter/material.dart';
 import 'package:date_o_matic/ui/main_page/main_page_view_model.dart';
 import 'package:provider/provider.dart';
@@ -32,9 +33,11 @@ class MainPage extends StatelessWidget {
             bottomNavigationBar: BottomNavigationBar(
               items: [
                 BottomNavigationBarItem(
-                    icon: const Icon(Icons.home), label: 'Home'),
+                    icon: const Icon(Icons.home),
+                    label: DateOMaticLocalizations.of(context)!.home),
                 BottomNavigationBarItem(
-                    icon: const Icon(Icons.bug_report), label: 'Debug'),
+                    icon: const Icon(Icons.bug_report),
+                    label: DateOMaticLocalizations.of(context)!.debug),
               ],
               onTap: (value) {
                 switch (value) {
@@ -43,16 +46,30 @@ class MainPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => MainPage(
-                                  title: 'DateOMatic App',
+                                  title: DateOMaticLocalizations.of(context)!
+                                      .mainPageTitle,
                                 )));
                     break;
                   case 1:
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LogPage()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DebugPage(
+                                title: DateOMaticLocalizations.of(context)!
+                                    .debugPageTitle)));
                     break;
                   default:
                 }
               },
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                viewModel.toggleOnline();
+              },
+              tooltip: 'Toggle Online/Offline',
+              //TODO: change icon based on online/offline state and do some nice animation
+              child: Icon(Icons.heart_broken,
+                  color: viewModel.isOnline ? Colors.red : Colors.grey),
             ),
           );
         },

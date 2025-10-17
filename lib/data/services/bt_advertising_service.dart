@@ -5,18 +5,26 @@ import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/relationship_type.dart';
 import 'package:date_o_matic/data/model/what_i_want.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
 /// This service is responsible for the process of advertising our BLE service.
+@injectable
 class BtAdvertisingService {
   final _log = Logger('BtState');
   final _peripheralManager = PeripheralManager();
-  bool _advertising = false;
+  bool _isAdvertising = false;
 
   late final StreamSubscription _stateChangedSubscription;
   late final StreamSubscription _characteristicReadRequestedSubscription;
   late final StreamSubscription _characteristicWriteRequestedSubscription;
   late final StreamSubscription _characteristicNotifyStateChangedSubscription;
+
+  final StreamController<
+      bool> _canAdvertiseStreamController = StreamController<bool>.broadcast()
+    ..add(false); //CentralManager().state == BluetoothLowEnergyState.poweredOn;
+  final StreamController<bool> _isAdvertisingStreamController =
+      StreamController<bool>.broadcast()..add(false);
 
   /// The unique identifier of our advertising service.
   static final serviceUuid =
@@ -34,12 +42,28 @@ class BtAdvertisingService {
       //TODO: handle states correctly
       if (eventArgs.state == BluetoothLowEnergyState.unauthorized &&
           Platform.isAndroid) {
+        _canAdvertiseStreamController.add(false);
         await _peripheralManager.authorize();
       } else if (eventArgs.state == BluetoothLowEnergyState.poweredOn) {
+        _canAdvertiseStreamController.add(true);
       } else if (eventArgs.state == BluetoothLowEnergyState.poweredOff ||
           eventArgs.state == BluetoothLowEnergyState.unsupported) {
+        _canAdvertiseStreamController.add(false);
         //somehow we get unsupported on android if bt is powered off
       }
+    });
+  }
+
+  /// Stops listening and frees all resources.
+  //TODO: dispose from ioc
+  void dispose() {
+    stopAdvertising().then((value) {
+      _canAdvertiseStreamController.close();
+      _isAdvertisingStreamController.close();
+      _stateChangedSubscription.cancel();
+      _characteristicReadRequestedSubscription.cancel();
+      _characteristicWriteRequestedSubscription.cancel();
+      _characteristicNotifyStateChangedSubscription.cancel();
     });
   }
 
@@ -47,22 +71,19 @@ class BtAdvertisingService {
   bool get canAdvertise =>
       _peripheralManager.state == BluetoothLowEnergyState.poweredOn;
 
+  /// Returns a stream that notifies about changes to the ability to advertise.
+  Stream<bool> get canAdvertiseChanged => _canAdvertiseStreamController.stream;
+
   /// Returns `true` if the service is currently advertising, else `false`.
-  bool get advertising => _advertising;
+  bool get isAdvertising => _isAdvertising;
 
-  /// Disposes this instance, stops advertising and frees all resources.
-  void dispose() {
-    stopAdvertising();
-
-    _stateChangedSubscription.cancel();
-    _characteristicReadRequestedSubscription.cancel();
-    _characteristicWriteRequestedSubscription.cancel();
-    _characteristicNotifyStateChangedSubscription.cancel();
-  }
+  /// Returns a stream that notifies about changes to the advertising status.
+  Stream<bool> get isAdvertisingChanged =>
+      _isAdvertisingStreamController.stream;
 
   /// Starts advertising our dating service and tells listeners that we are here.
   void startAdvertising() async {
-    if (_advertising || !canAdvertise) {
+    if (_isAdvertising || !canAdvertise) {
       _log.shout(
           '... not advertising. Already advertising or cannot advertise.');
       return;
@@ -114,7 +135,8 @@ class BtAdvertisingService {
     );
     try {
       await _peripheralManager.startAdvertising(advertisement);
-      _advertising = true;
+      _isAdvertising = true;
+      _isAdvertisingStreamController.add(true);
       _log.shout('Advertising now...');
     } catch (e) {
       _log.shout('startAdvertising failed: $e');
@@ -124,7 +146,7 @@ class BtAdvertisingService {
   /// Stops advertising so others won't see us anymore.
   Future<void> stopAdvertising() async {
     _log.shout('stopAdvertising...');
-    if (!_advertising) {
+    if (!_isAdvertising) {
       _log.shout('... not advertising. nothing to do.');
       return;
     }
@@ -133,7 +155,8 @@ class BtAdvertisingService {
     try {
       await peripheralManager.stopAdvertising();
       _log.shout('Advertising stopped');
-      _advertising = false;
+      _isAdvertising = false;
+      _isAdvertisingStreamController.add(false);
     } catch (e) {
       _log.shout('stopAdvertising failed: $e');
     }

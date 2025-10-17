@@ -111,11 +111,53 @@ abstract class DateOMaticLocalizations {
   /// **'Open source components'**
   String get openSourceComponents;
 
+  /// No description provided for @mainPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DateOMatic'**
+  String get mainPageTitle;
+
+  /// No description provided for @debugPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug'**
+  String get debugPageTitle;
+
   /// No description provided for @home.
   ///
   /// In en, this message translates to:
   /// **'Home'**
   String get home;
+
+  /// No description provided for @debug.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug'**
+  String get debug;
+
+  /// No description provided for @startAdvertising.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Advertising'**
+  String get startAdvertising;
+
+  /// No description provided for @stopAdvertising.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Advertising'**
+  String get stopAdvertising;
+
+  /// No description provided for @startDiscovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Discovery'**
+  String get startDiscovery;
+
+  /// No description provided for @stopDiscovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Discovery'**
+  String get stopDiscovery;
 }
 
 class _DateOMaticLocalizationsDelegate

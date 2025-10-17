@@ -3,36 +3,55 @@ import 'dart:async';
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:date_o_matic/data/model/what_i_want.dart';
 import 'package:date_o_matic/data/services/bt_advertising_service.dart';
+import 'package:flutter/widgets.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
 /// This class is responsible for the discovery of other devices nearby that
 /// advertise our service.
+@injectable
 class BtDiscoveryService {
   final _log = Logger('BtState');
   UUID? _connectedTo;
-  StreamSubscription? _subscription;
-  bool _listening = false;
+  StreamSubscription? _discoverySubscription;
+  bool _isListening = false;
 
-  /// Returns `true` if we are allowed to discover, else `false`.
-  bool get canDiscover =>
-      CentralManager().state == BluetoothLowEnergyState.poweredOn;
+  final StreamController<
+      bool> _canDiscoverStreamController = StreamController<bool>.broadcast()
+    ..add(false); //CentralManager().state == BluetoothLowEnergyState.poweredOn;
+  final StreamController<bool> _isListeningStreamController =
+      StreamController<bool>.broadcast()..add(false);
 
   /// Stops listening and frees all resources.
+  //TODO: dispose from ioc
   void dispose() {
-    stopListening();
+    stopListening().then((value) {
+      _canDiscoverStreamController.close();
+      _isListeningStreamController.close();
+      _discoverySubscription?.cancel();
+    });
   }
+
+  /// Returns `true` if the device can discover other devices, else `false`.
+  Stream<bool> get canDiscover => _canDiscoverStreamController.stream;
+  //CentralManager().state == BluetoothLowEnergyState.poweredOn;
+
+  /// Returns `true` if we are currently listening for nearby devices, else `false`.
+  Stream<bool> get isListening => _isListeningStreamController.stream;
 
   /// Starts listening for nearby devices advertising our service.
   void startListening() async {
-    if (_listening || !canDiscover) {
+    if (_isListening ||
+        !(CentralManager().state == BluetoothLowEnergyState.poweredOn)) {
       _log.shout('... not listening. Already listening or cannot discover.');
       return;
     }
 
     final centralManager = CentralManager();
     centralManager.startDiscovery();
-    _listening = true;
-    _subscription = centralManager.discovered.listen((event) async {
+    _isListeningStreamController.add(true);
+    _isListening = true;
+    _discoverySubscription = centralManager.discovered.listen((event) async {
       if (event.advertisement.serviceUUIDs
           .contains(BtAdvertisingService.serviceUuid)) {
         //TODO: connect, store data with peripheral uuid as key and disconnect again
@@ -91,11 +110,12 @@ class BtDiscoveryService {
   }
 
   /// Stops listening for nearby devices.
-  void stopListening() async {
+  Future stopListening() async {
     final centralManager = CentralManager();
-    _listening = false;
-    centralManager.stopDiscovery();
-    _subscription?.cancel();
+    _isListening = false;
+    _isListeningStreamController.add(false);
+    await centralManager.stopDiscovery();
+    _discoverySubscription?.cancel();
     _connectedTo = null;
   }
 }

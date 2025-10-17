@@ -1,38 +1,35 @@
-import 'package:date_o_matic/data/services/bt_advertising_service.dart';
-import 'package:date_o_matic/data/services/bt_discovery_service.dart';
+import 'package:date_o_matic/data/repositories/user_profile_repository.dart';
+import 'package:date_o_matic/ioc_init.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 
 /// ViewModel for the [MainPage]
 class MainPageViewModel extends ChangeNotifier {
   //final _log = Logger('BtState');
-  //TODO: pass them as parameters
-  final _advertisingService = BtAdvertisingService();
-  final _discoveryService = BtDiscoveryService();
+  final UserProfileRepository _userProfileRepository =
+      getIt<UserProfileRepository>();
 
   /// Creates an instance of this class
   MainPageViewModel() {
     //TODO: set the root log level somewhwere else
     Logger.root.level = Level.WARNING;
+    _userProfileRepository.isOnlineChanged.listen((event) {
+      notifyListeners();
+    });
   }
 
-  /// Starts advertising our service
-  void startAdvertising() {
-    _advertisingService.startAdvertising();
+  @override
+  void dispose() {
+    _userProfileRepository.dispose();
+    super.dispose();
   }
 
-  /// Stops advertising our service
-  void stopAdvertising() {
-    _advertisingService.stopAdvertising();
-  }
+  /// Returns `true` if the user is currently online (advertising or discovering), else `false`.
+  bool get isOnline => _userProfileRepository.isOnline;
 
-  /// Starts discovering other devices advertising our service
-  void startDiscovery() {
-    _discoveryService.startListening();
-  }
-
-  /// Stops discovering other devices advertising our service
-  void stopDiscovery() {
-    _discoveryService.stopListening();
+  /// Toggles the online status of the user.
+  void toggleOnline() {
+    _userProfileRepository.toggleOnlineStatus();
+    notifyListeners();
   }
 }

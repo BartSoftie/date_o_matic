@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:date_o_matic/ioc_init.dart';
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:date_o_matic/ui/main_page/main_page.dart';
 import 'package:date_o_matic/data/services/permission_service.dart';
@@ -14,6 +15,7 @@ import 'firebase_options.dart';
 
 void main() async {
   await _initializeApp();
+  configureDependencies();
 
   runApp(const DateOMaticApp());
 }

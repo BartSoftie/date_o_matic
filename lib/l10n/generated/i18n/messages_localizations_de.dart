@@ -15,5 +15,26 @@ class DateOMaticLocalizationsDe extends DateOMaticLocalizations {
   String get openSourceComponents => 'Open Source Komponenten';
 
   @override
+  String get mainPageTitle => 'DateOMatic';
+
+  @override
+  String get debugPageTitle => 'Debug';
+
+  @override
   String get home => 'Home';
+
+  @override
+  String get debug => 'Debug';
+
+  @override
+  String get startAdvertising => 'Start Advertising';
+
+  @override
+  String get stopAdvertising => 'Stop Advertising';
+
+  @override
+  String get startDiscovery => 'Start Discovery';
+
+  @override
+  String get stopDiscovery => 'Stop Discovery';
 }

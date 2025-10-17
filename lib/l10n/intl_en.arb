@@ -8,8 +8,36 @@
     "@openSourceComponents": {
         "type": "text"
     },
+    "mainPageTitle": "DateOMatic",
+    "@mainPageTitle": {
+        "type": "text"
+    },
+    "debugPageTitle": "Debug",
+    "@debugPageTitle": {
+        "type": "text"
+    },
     "home": "Home",
     "@home": {
+        "type": "text"
+    },
+    "debug": "Debug",
+    "@debug": {
+        "type": "text"
+    },
+    "startAdvertising": "Start Advertising",
+    "@startAdvertising": {
+        "type": "text"
+    },
+    "stopAdvertising": "Stop Advertising",
+    "@stopAdvertising": {
+        "type": "text"
+    },
+    "startDiscovery": "Start Discovery",
+    "@startDiscovery": {
+        "type": "text"
+    },
+    "stopDiscovery": "Stop Discovery",
+    "@stopDiscovery": {
         "type": "text"
     }
 }

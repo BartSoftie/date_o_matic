@@ -1,23 +1,27 @@
-import 'package:date_o_matic/ui/log_page/log_page_view_model.dart';
+import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
+import 'package:date_o_matic/ui/debug_page/debug_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /// A page that shows log messages
-class LogPage extends StatelessWidget {
-  final LogPageViewModel _viewModel = LogPageViewModel();
+class DebugPage extends StatelessWidget {
+  final DebugPageViewModel _viewModel = DebugPageViewModel();
+
+  /// The title that is shown in the app bar
+  final String title;
 
   /// Creates an instance of this class
-  LogPage({super.key});
+  DebugPage({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: Consumer<LogPageViewModel>(
+      child: Consumer<DebugPageViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Log'),
+              title: Text(title),
             ),
             body: Center(
               child: Column(
@@ -27,10 +31,12 @@ class LogPage extends StatelessWidget {
                     children: <Widget>[
                       TextButton(
                           onPressed: () => viewModel.startAdvertising(),
-                          child: const Text('Start Advertising')),
+                          child: Text(DateOMaticLocalizations.of(context)!
+                              .startAdvertising)),
                       TextButton(
                           onPressed: () => viewModel.stopAdvertising(),
-                          child: const Text('Stop Advertising')),
+                          child: Text(DateOMaticLocalizations.of(context)!
+                              .stopAdvertising)),
                     ],
                   ),
                   Row(
@@ -38,10 +44,12 @@ class LogPage extends StatelessWidget {
                     children: <Widget>[
                       TextButton(
                           onPressed: () => viewModel.startDiscovery(),
-                          child: const Text('Start Discovery')),
+                          child: Text(DateOMaticLocalizations.of(context)!
+                              .startDiscovery)),
                       TextButton(
                           onPressed: () => viewModel.stopDiscovery(),
-                          child: const Text('Stop Discovery')),
+                          child: Text(DateOMaticLocalizations.of(context)!
+                              .stopDiscovery)),
                     ],
                   ),
                   Expanded(
