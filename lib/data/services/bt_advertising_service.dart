@@ -55,7 +55,6 @@ class BtAdvertisingService {
   }
 
   /// Stops listening and frees all resources.
-  //TODO: dispose from ioc
   void dispose() {
     stopAdvertising().then((value) {
       _canAdvertiseStreamController.close();
@@ -82,7 +81,7 @@ class BtAdvertisingService {
       _isAdvertisingStreamController.stream;
 
   /// Starts advertising our dating service and tells listeners that we are here.
-  void startAdvertising() async {
+  Future startAdvertising() async {
     if (_isAdvertising || !canAdvertise) {
       _log.shout(
           '... not advertising. Already advertising or cannot advertise.');

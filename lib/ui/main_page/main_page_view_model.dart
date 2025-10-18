@@ -15,7 +15,7 @@ class MainPageViewModel extends ChangeNotifier {
   /// Creates an instance of this class
   MainPageViewModel() {
     //TODO: set the root log level somewhwere else
-    Logger.root.level = Level.WARNING;
+    Logger.root.level = Level.SEVERE;
     _userProfileRepository.isOnlineChanged.listen((event) {
       notifyListeners();
     });
@@ -42,7 +42,8 @@ class MainPageViewModel extends ChangeNotifier {
 
   /// Toggles the online status of the user.
   void toggleOnline() {
-    _userProfileRepository.toggleOnlineStatus();
-    notifyListeners();
+    _userProfileRepository.toggleOnlineStatus().then((value) {
+      notifyListeners();
+    });
   }
 }

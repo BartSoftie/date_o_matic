@@ -26,7 +26,6 @@ class BtDiscoveryService {
       StreamController<Peripheral>.broadcast();
 
   /// Stops listening and frees all resources.
-  //TODO: dispose from ioc
   void dispose() {
     stopListening().then((value) {
       _canDiscoverStreamController.close();
@@ -47,7 +46,7 @@ class BtDiscoveryService {
       _discoveredPeripheralStreamController.stream;
 
   /// Starts listening for nearby devices advertising our service.
-  void startListening() async {
+  Future startListening() async {
     if (_isListening ||
         !(CentralManager().state == BluetoothLowEnergyState.poweredOn)) {
       _log.shout('... not listening. Already listening or cannot discover.');
@@ -55,10 +54,10 @@ class BtDiscoveryService {
     }
 
     final centralManager = CentralManager();
-    centralManager.startDiscovery();
+    await centralManager.startDiscovery();
     _isListeningStreamController.add(true);
     _isListening = true;
-    _discoverySubscription = centralManager.discovered.listen((event) async {
+    _discoverySubscription = centralManager.discovered.listen((event) {
       if (event.advertisement.serviceUUIDs
           .contains(BtAdvertisingService.serviceUuid)) {
         if (_discoveredDevices.add(event.peripheral.uuid)) {

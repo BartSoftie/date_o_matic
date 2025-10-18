@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:date_o_matic/data/model/what_i_want.dart';
@@ -27,7 +26,6 @@ class UserProfileRepository {
 
   bool _isConnected = false;
 
-  //TODO: Peripheral uuid and hash is no constant. Use own Id in Data.
   final Map<int, Peripheral> _connectedPeripherals = {};
   final List<WhatIWant> _whatTheyWantList = [];
 
@@ -59,6 +57,7 @@ class UserProfileRepository {
       }
 
       try {
+        await _btDiscoveryService.stopListening();
         await centralManager.connect(event);
         _isConnected = true;
 
@@ -81,6 +80,9 @@ class UserProfileRepository {
                   _whatTheyWantList.add(whatTheyWant);
                   _profileDiscoveredController.add(whatTheyWant);
                   _log.shout('Value: $whatTheyWant');
+                } else {
+                  _log.shout(
+                      'Profile with id ${whatTheyWant.id} already discovered, skipping.');
                 }
 
                 break;
@@ -94,12 +96,15 @@ class UserProfileRepository {
             'Error while connecting/reading from peripheral ${event.uuid}: $e');
       } finally {
         try {
-          await centralManager.disconnect(event);
+          if (_isConnected) {
+            await centralManager.disconnect(event);
+          }
         } catch (e) {
           _log.severe(
               'Error while disconnecting from peripheral ${event.uuid}: $e');
         } finally {
           _isConnected = false;
+          await _btDiscoveryService.startListening();
         }
       }
       _log.shout('Disconnected from peripheral ${event.uuid}');
@@ -119,7 +124,7 @@ class UserProfileRepository {
   }
 
   /// Disposes the resources used by this repository.
-  //TODO: dispose from ioc
+  @disposeMethod
   void dispose() {
     _isOnlineStreamController.close();
     _profileDiscoveredController.close();
@@ -145,13 +150,13 @@ class UserProfileRepository {
 
   /// Toggles the online status of the user.
   /// If the user is currently online, they will go offline and vice versa.
-  void toggleOnlineStatus() {
+  Future toggleOnlineStatus() async {
     if (isOnline) {
-      _btAdvertisingService.stopAdvertising();
-      _btDiscoveryService.stopListening();
+      await _btAdvertisingService.stopAdvertising();
+      await _btDiscoveryService.stopListening();
     } else {
-      _btDiscoveryService.startListening();
-      _btAdvertisingService.startAdvertising();
+      await _btDiscoveryService.startListening();
+      await _btAdvertisingService.startAdvertising();
     }
   }
 }
