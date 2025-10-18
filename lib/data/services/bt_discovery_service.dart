@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
+import 'package:date_o_matic/data/model/auto_cleanup_set.dart';
 import 'package:date_o_matic/data/services/bt_advertising_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
@@ -12,6 +12,9 @@ class BtDiscoveryService {
   final _log = Logger('BtState');
   StreamSubscription? _discoverySubscription;
   bool _isListening = false;
+
+  final AutoCleanupSet<UUID> _discoveredDevices =
+      AutoCleanupSet(cleanupInterval: Duration(seconds: 30));
 
   final StreamController<
       bool> _canDiscoverStreamController = StreamController<bool>.broadcast()
@@ -58,59 +61,14 @@ class BtDiscoveryService {
     _discoverySubscription = centralManager.discovered.listen((event) async {
       if (event.advertisement.serviceUUIDs
           .contains(BtAdvertisingService.serviceUuid)) {
-        //TODO: connect, store data with peripheral uuid as key and disconnect again
-        //if (_connectedTo == null) {
-        //event.peripheral.uuid) {
-        //_connectedTo = event.peripheral.uuid;
+        if (_discoveredDevices.add(event.peripheral.uuid)) {
+          _log.finest(
+              'Discovered service: ${event.peripheral.uuid}, RSSI: ${event.rssi}');
+          _discoveredPeripheralStreamController.add(event.peripheral);
+        }
         _log.finest(
-            'Discovered service: ${event.peripheral.uuid}, RSSI: ${event.rssi}');
-        _discoveredPeripheralStreamController.add(event.peripheral);
-        // adding service data currently leads to crash on android
-        // advertising not possible. maybe in the future.
-        // var wiwVal =
-        //     event.advertisement.serviceData[BtAdvertisingService.serviceUuid];
-        // _log.shout('Got ServiceData: $wiwVal');
-        // if (wiwVal != null) {
-        //   var wivV = WhatIWant.fromUint8List(wiwVal);
-        //   _log.shout('ServiceData value: $wivV');
-        // }
-        // //TODO: multiple connections should work
-        // await centralManager.connect(event.peripheral);
-        // _log.shout('Connected');
-        // var gatt = await centralManager.discoverGATT(event.peripheral);
-        // if (gatt.isNotEmpty) {
-        //   _log.shout('not empty');
-        //   //TODO: can I filter for g.uuid? make this more robust. provide orElse to firstWhere
-        //   var service = gatt
-        //       .firstWhere((g) => g.uuid == BtAdvertisingService.serviceUuid);
-        //   var characteristics = service.characteristics.firstWhere(
-        //       (c) => c.uuid == BtAdvertisingService.gattCharacteristicsUuid);
-        //   var value = await centralManager.readCharacteristic(
-        //       event.peripheral, characteristics);
-
-        //   _log.shout('Got Charachteristics: $value');
-        //   var whatHeWants = WhatIWant.fromUint8List(value);
-        //   _log.shout('Value: $whatHeWants');
-        // }
-        // await centralManager.disconnect(event.peripheral);
-        //_log.shout('Disconnected');
-
-        // then((value) {
-        //   _log.shout('Connected');
-        //   CentralManager.instance
-        //       .readCharacteristic(
-        //     GattCharacteristic(
-        //       uuid: BtAdvertisingService.gattCharacteristicsUuid,
-        //       properties: [],
-        //       //value: whatIWant.asUint8List(),
-        //       descriptors: [/*GattDescriptor(uuid: UUID.short(201))*/],
-        //     ),
-        //   )
-        //       .then((value) {
-        //     _log.shout('$value');
-        //   });
-        // });
-        //}
+            'Discovered known service: ${event.peripheral.uuid}, RSSI: ${event.rssi}');
+        _log.finest('Don\'t notifiy');
       }
     });
   }
