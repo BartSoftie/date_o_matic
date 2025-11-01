@@ -7,8 +7,10 @@ import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/matched_profile.dart';
 import 'package:date_o_matic/data/model/relationship_type.dart';
 import 'package:date_o_matic/data/model/search_profile.dart';
+import 'package:date_o_matic/data/model/user_profile.dart';
 import 'package:date_o_matic/data/services/bt_advertising_service.dart';
 import 'package:date_o_matic/data/services/bt_discovery_service.dart';
+import 'package:date_o_matic/data/services/hive_secure_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
@@ -18,9 +20,10 @@ class UserProfileRepository {
   final _log = Logger('UserProfileRepository');
   final BtDiscoveryService _btDiscoveryService;
   final BtAdvertisingService _btAdvertisingService;
-  StreamSubscription? _discoveryStateSubscription;
-  StreamSubscription? _advertisingStateSubscription;
-  StreamSubscription? _discoverySubscription;
+  final HiveSecureService _hiveSecureService;
+  // StreamSubscription? _discoveryStateSubscription;
+  // StreamSubscription? _advertisingStateSubscription;
+  // StreamSubscription? _discoverySubscription;
   final StreamController<bool> _isOnlineStreamController =
       StreamController<bool>.broadcast();
   final StreamController<MatchedProfile> _profileDiscoveredController =
@@ -49,35 +52,48 @@ class UserProfileRepository {
   UserProfileRepository({
     required BtDiscoveryService btDiscoveryService,
     required BtAdvertisingService btAdvertisingService,
+    required HiveSecureService hiveSecureService,
   })  : _btDiscoveryService = btDiscoveryService,
-        _btAdvertisingService = btAdvertisingService {
-    _discoveryStateSubscription =
-        _btDiscoveryService.isListeningChanged.listen(_onDiscoveryStateChanged);
+        _btAdvertisingService = btAdvertisingService,
+        _hiveSecureService = hiveSecureService {
+    //_discoveryStateSubscription =
+    _btDiscoveryService.isListeningChanged.listen(_onDiscoveryStateChanged);
 
-    _discoverySubscription =
-        _btDiscoveryService.discoveredPeripherals.listen(_onDeviceDiscovered);
+    //_discoverySubscription =
+    _btDiscoveryService.discoveredPeripherals.listen(_onDeviceDiscovered);
 
-    _advertisingStateSubscription = _btAdvertisingService.isAdvertisingChanged
+    //_advertisingStateSubscription =
+    _btAdvertisingService.isAdvertisingChanged
         .listen(_onAdvertisingStateChanged);
   }
 
-  /// Disposes the resources used by this repository.
-  @disposeMethod
-  void dispose() {
-    _isOnlineStreamController.close();
-    _profileDiscoveredController.close();
-    _discoveryStateSubscription?.cancel();
-    _advertisingStateSubscription?.cancel();
-    _discoverySubscription?.cancel();
-    _btAdvertisingService.dispose();
-    _btDiscoveryService.dispose();
-  }
+  // As long as this class is a singleton, we do not need to dispose it.
+  // /// Disposes the resources used by this repository.
+  // @disposeMethod
+  // void dispose() {
+  //   _hiveSecureService.dispose();
+  //   _isOnlineStreamController.close();
+  //   _profileDiscoveredController.close();
+  //   _discoveryStateSubscription?.cancel();
+  //   _advertisingStateSubscription?.cancel();
+  //   _discoverySubscription?.cancel();
+  //   _btAdvertisingService.dispose();
+  //   _btDiscoveryService.dispose();
+  // }
 
   /// Returns `true` if the user is currently online (advertising or discovering), else `false`.
   bool get isOnline => _isAdvertising || _isListening;
 
   /// Returns a stream that emits a value whenever the online status changes.
   Stream<bool> get isOnlineChanged => _isOnlineStreamController.stream;
+
+  /// Gets or sets the user's profile.
+  UserProfile? get userProfile => _hiveSecureService.loadUserProfile();
+  set userProfile(UserProfile? profile) {
+    if (profile != null) {
+      _hiveSecureService.saveUserProfile(profile);
+    }
+  }
 
   /// Returns an unmodifiable list of discovered profiles that match my profile.
   List<MatchedProfile> get matchedProfilesList =>
@@ -121,7 +137,7 @@ class UserProfileRepository {
   }
 
   void _onDeviceDiscovered((Peripheral, int) event) async {
-    SearchProfile? whatTheyWant = await _getWhatTheyWant(event.$1);
+    SearchProfile? whatTheyWant = await _getTheirSearchProfile(event.$1);
     if (whatTheyWant != null) {
       if (_noMatchList.contains(whatTheyWant.userId)) {
         return;
@@ -142,7 +158,7 @@ class UserProfileRepository {
     }
   }
 
-  Future<SearchProfile?> _getWhatTheyWant(Peripheral event) async {
+  Future<SearchProfile?> _getTheirSearchProfile(Peripheral event) async {
     SearchProfile? whatTheyWant;
     final centralManager = CentralManager();
     _log.shout('Connecting to discovered peripheral ${event.uuid}');

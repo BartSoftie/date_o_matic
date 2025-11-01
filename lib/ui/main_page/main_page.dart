@@ -52,6 +52,7 @@ class _MainPageState extends State<MainPage>
 
   @override
   Widget build(BuildContext context) {
+    //TODO: if no profiles added yet, take other route and let the user create profiles first
     return ChangeNotifierProvider.value(
       value: _viewModel,
       child: Consumer<MainPageViewModel>(

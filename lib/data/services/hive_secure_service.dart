@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:date_o_matic/data/model/gender.dart';
+import 'package:date_o_matic/data/model/relationship_type.dart';
 import 'package:date_o_matic/data/model/search_profile.dart';
 import 'package:date_o_matic/data/model/user_profile.dart';
 import 'package:flutter/foundation.dart';
@@ -24,6 +26,8 @@ class HiveSecureService {
 
     Hive.registerAdapter(UserProfileAdapter());
     Hive.registerAdapter(SearchProfileAdapter());
+    Hive.registerAdapter(GenderAdapter());
+    Hive.registerAdapter(RelationshipTypeAdapter());
 
     final encryptionKey = await _getOrCreateEncryptionKey();
     _profilesBox = await Hive.openBox<SearchProfile>(
@@ -35,6 +39,12 @@ class HiveSecureService {
       _whoIAmBoxName,
       encryptionCipher: HiveAesCipher(encryptionKey),
     );
+  }
+
+  /// Disposes the Hive boxes.
+  void dispose() {
+    _profilesBox.close();
+    _whoIAmBox.close();
   }
 
   /// Loads the user profile from the secure Hive box.
@@ -49,7 +59,15 @@ class HiveSecureService {
 
   /// Adds a new search profile to the secure Hive box.
   Future<void> addSearchProfile(SearchProfile newProfile) async {
-    await _profilesBox.add(newProfile);
+    int index = await _profilesBox.add(newProfile);
+    SearchProfile storedProfile = _profilesBox.getAt(index)!;
+    storedProfile.profileId = index;
+    await _profilesBox.put(index, storedProfile);
+  }
+
+  /// Updates an existing search profile in the secure Hive box.
+  Future<void> updateSearchProfile(SearchProfile changedProfile) async {
+    await _profilesBox.put(changedProfile.profileId, changedProfile);
   }
 
   /// Retrieves all search profiles from the secure Hive box.

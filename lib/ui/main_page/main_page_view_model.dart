@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:date_o_matic/data/model/matched_profile.dart';
@@ -12,19 +13,20 @@ class MainPageViewModel extends ChangeNotifier {
   //final _log = Logger('BtState');
   final UserProfileRepository _userProfileRepository =
       getIt<UserProfileRepository>();
-
-  //TODO: load user profile from repository/storage
-  late UserProfile _userProfile = UserProfile();
+  late final StreamSubscription _isOnlineSubscription;
+  late final StreamSubscription _profileDiscoveredSubscription;
 
   /// Creates an instance of this class
   MainPageViewModel() {
     //TODO: set the root log level somewhwere else
     Logger.root.level = Level.SEVERE;
-    _userProfileRepository.isOnlineChanged.listen((event) {
+    _isOnlineSubscription =
+        _userProfileRepository.isOnlineChanged.listen((event) {
       notifyListeners();
     });
 
-    _userProfileRepository.profileDiscovered.listen((event) {
+    _profileDiscoveredSubscription =
+        _userProfileRepository.profileDiscovered.listen((event) {
       // Handle discovered profile
       // For example, you might want to update the UI or store the profile
       notifyListeners();
@@ -33,7 +35,8 @@ class MainPageViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    _userProfileRepository.dispose();
+    _isOnlineSubscription.cancel();
+    _profileDiscoveredSubscription.cancel();
     super.dispose();
   }
 
@@ -45,7 +48,8 @@ class MainPageViewModel extends ChangeNotifier {
       UnmodifiableListView(_userProfileRepository.matchedProfilesList);
 
   /// Returns the current user profile.
-  UserProfile get userProfile => _userProfile;
+  UserProfile get userProfile =>
+      _userProfileRepository.userProfile ?? UserProfile();
 
   /// Toggles the online status of the user.
   void toggleOnline() {
@@ -56,7 +60,7 @@ class MainPageViewModel extends ChangeNotifier {
 
   /// Updates the user profile and notifies listeners.
   void updateUserProfile(UserProfile updatedProfile) {
-    _userProfile = updatedProfile;
+    _userProfileRepository.userProfile = updatedProfile;
     notifyListeners();
   }
 }
