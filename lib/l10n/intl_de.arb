@@ -167,5 +167,29 @@
     "userProfileEditPageSaveProfile": "Profil speichern",
     "@userProfileEditPageSaveProfile": {
         "type": "text"
+    },
+    "male": "Mann",
+    "@male": {
+        "type": "text"
+    },
+    "female": "Frau",
+    "@female": {
+        "type": "text"
+    },
+    "diverse": "Divers",
+    "@diverse": {
+        "type": "text"
+    },
+    "serious": "Beziehung",
+    "@serious": {
+        "type": "text"
+    },
+    "casual": "One night stand",
+    "@casual": {
+        "type": "text"
+    },
+    "friendsWithBenefits": "Friends with Benefits",
+    "@friendsWithBenefits": {
+        "type": "text"
     }
 }

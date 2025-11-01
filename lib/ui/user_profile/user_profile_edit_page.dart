@@ -133,7 +133,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                 items: Gender.values.map((type) {
                   return DropdownMenuItem(
                     value: type,
-                    child: Text(type.name),
+                    child: Text(getLocalizedGenderName(type, localizations)),
                   );
                 }).toList(),
                 onChanged: (Gender? newValue) {

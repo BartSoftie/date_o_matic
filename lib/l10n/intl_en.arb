@@ -167,5 +167,29 @@
     "userProfileEditPageSaveProfile": "Save Profile",
     "@userProfileEditPageSaveProfile": {
         "type": "text"
+    },
+    "male": "Male",
+    "@male": {
+        "type": "text"
+    },
+    "female": "Female",
+    "@female": {
+        "type": "text"
+    },
+    "diverse": "Diverse",
+    "@diverse": {
+        "type": "text"
+    },
+    "serious": "Serious",
+    "@serious": {
+        "type": "text"
+    },
+    "casual": "Casual",
+    "@casual": {
+        "type": "text"
+    },
+    "friendsWithBenefits": "Friends with Benefits",
+    "@friendsWithBenefits": {
+        "type": "text"
     }
 }

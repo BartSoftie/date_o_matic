@@ -91,7 +91,8 @@ class _SearchProfileEditPageState extends State<SearchProfileEditPage> {
                 items: RelationshipType.values.map((type) {
                   return DropdownMenuItem(
                     value: type,
-                    child: Text(type.toString().split('.').last),
+                    child: Text(
+                        getLocalizedRelationshipTypeName(type, localizations)),
                   );
                 }).toList(),
                 onChanged: (RelationshipType? newValue) {
@@ -110,7 +111,7 @@ class _SearchProfileEditPageState extends State<SearchProfileEditPage> {
                 items: Gender.values.map((type) {
                   return DropdownMenuItem(
                     value: type,
-                    child: Text(type.toString().split('.').last),
+                    child: Text(getLocalizedGenderName(type, localizations)),
                   );
                 }).toList(),
                 onChanged: (Gender? newValue) {

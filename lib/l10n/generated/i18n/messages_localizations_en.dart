@@ -133,4 +133,22 @@ class DateOMaticLocalizationsEn extends DateOMaticLocalizations {
 
   @override
   String get userProfileEditPageSaveProfile => 'Save Profile';
+
+  @override
+  String get male => 'Male';
+
+  @override
+  String get female => 'Female';
+
+  @override
+  String get diverse => 'Diverse';
+
+  @override
+  String get serious => 'Serious';
+
+  @override
+  String get casual => 'Casual';
+
+  @override
+  String get friendsWithBenefits => 'Friends with Benefits';
 }

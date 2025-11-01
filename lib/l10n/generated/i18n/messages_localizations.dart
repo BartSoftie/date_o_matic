@@ -327,6 +327,42 @@ abstract class DateOMaticLocalizations {
   /// In en, this message translates to:
   /// **'Save Profile'**
   String get userProfileEditPageSaveProfile;
+
+  /// No description provided for @male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get male;
+
+  /// No description provided for @female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get female;
+
+  /// No description provided for @diverse.
+  ///
+  /// In en, this message translates to:
+  /// **'Diverse'**
+  String get diverse;
+
+  /// No description provided for @serious.
+  ///
+  /// In en, this message translates to:
+  /// **'Serious'**
+  String get serious;
+
+  /// No description provided for @casual.
+  ///
+  /// In en, this message translates to:
+  /// **'Casual'**
+  String get casual;
+
+  /// No description provided for @friendsWithBenefits.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends with Benefits'**
+  String get friendsWithBenefits;
 }
 
 class _DateOMaticLocalizationsDelegate
