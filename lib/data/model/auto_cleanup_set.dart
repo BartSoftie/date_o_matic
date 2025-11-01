@@ -3,8 +3,8 @@ import 'dart:collection';
 
 /// A set that automatically cleans up entries after a certain duration.
 class AutoCleanupSet<T> {
-  final HashSet<T> _discoveredServiceUuids = HashSet();
-  final Queue<(DateTime, T)> _discoveredPeripheralsQueue = Queue();
+  final HashSet<T> _discoveredIds = HashSet();
+  final Queue<(DateTime, T)> _discoveredItemsQueue = Queue();
   final Duration _cleanupInterval;
   final Duration _removeOlderThan;
 
@@ -26,15 +26,14 @@ class AutoCleanupSet<T> {
   }
 
   /// Returns an unmodifiable view of the items in the set.
-  UnmodifiableSetView<T> get items =>
-      UnmodifiableSetView(_discoveredServiceUuids);
+  UnmodifiableSetView<T> get items => UnmodifiableSetView(_discoveredIds);
 
   /// Adds the given [entry] to the set. Returns `true` if the entry was added,
   /// else `false`.
   bool add(T entry) {
-    bool itemAdded = _discoveredServiceUuids.add(entry);
+    bool itemAdded = _discoveredIds.add(entry);
     if (itemAdded) {
-      _discoveredPeripheralsQueue.addLast((DateTime.now(), entry));
+      _discoveredItemsQueue.addLast((DateTime.now(), entry));
       if (_cleanupInterval == Duration.zero) {
         _cleanup();
       }
@@ -44,10 +43,10 @@ class AutoCleanupSet<T> {
 
   void _cleanup() {
     DateTime threshold = DateTime.now().subtract(_removeOlderThan);
-    while (_discoveredPeripheralsQueue.isNotEmpty &&
-        _discoveredPeripheralsQueue.first.$1.isBefore(threshold)) {
-      var removed = _discoveredPeripheralsQueue.removeFirst();
-      _discoveredServiceUuids.remove(removed.$2);
+    while (_discoveredItemsQueue.isNotEmpty &&
+        _discoveredItemsQueue.first.$1.isBefore(threshold)) {
+      var removed = _discoveredItemsQueue.removeFirst();
+      _discoveredIds.remove(removed.$2);
     }
   }
 }

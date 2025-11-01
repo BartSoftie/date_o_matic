@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/relationship_type.dart';
-import 'package:date_o_matic/data/model/what_i_want.dart';
+import 'package:date_o_matic/data/model/search_profile.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
@@ -81,7 +82,7 @@ class BtAdvertisingService {
       _isAdvertisingStreamController.stream;
 
   /// Starts advertising our dating service and tells listeners that we are here.
-  Future startAdvertising() async {
+  Future startAdvertising(SearchProfile whatIWant) async {
     if (_isAdvertising || !canAdvertise) {
       _log.shout(
           '... not advertising. Already advertising or cannot advertise.');
@@ -98,13 +99,7 @@ class BtAdvertisingService {
     //   return;
     // }
     _log.shout('  ...done');
-    final myDob = DateTime(1973, 5, 28);
-    final whatIWant = WhatIWant(
-      gender: Gender.female,
-      relationshipType: RelationshipType.friendsWithBenefits,
-      bornFrom: myDob.copyWith(year: myDob.year - 10),
-      bornTill: myDob.copyWith(year: myDob.year + 10),
-    );
+
     final hereIAmService = GATTService(
       uuid: serviceUuid,
       isPrimary: true, //???

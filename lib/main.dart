@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:date_o_matic/data/services/hive_secure_service.dart';
 import 'package:date_o_matic/ioc_init.dart';
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:date_o_matic/ui/main_page/main_page.dart';
@@ -15,7 +16,6 @@ import 'firebase_options.dart';
 
 void main() async {
   await _initializeApp();
-  configureDependencies();
 
   runApp(const DateOMaticApp());
 }
@@ -67,4 +67,8 @@ Future<void> _initializeApp() async {
   };
 
   await PermissionService.instance().request();
+  configureDependencies();
+
+  final HiveSecureService hiveService = getIt<HiveSecureService>();
+  await hiveService.initialize();
 }

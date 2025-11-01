@@ -22,8 +22,9 @@ class BtDiscoveryService {
   final StreamController<bool> _isListeningStreamController =
       StreamController<bool>.broadcast()..add(false);
 
-  final StreamController<Peripheral> _discoveredPeripheralStreamController =
-      StreamController<Peripheral>.broadcast();
+  final StreamController<(Peripheral, int)>
+      _discoveredPeripheralStreamController =
+      StreamController<(Peripheral, int)>.broadcast();
 
   /// Stops listening and frees all resources.
   void dispose() {
@@ -39,10 +40,10 @@ class BtDiscoveryService {
   //CentralManager().state == BluetoothLowEnergyState.poweredOn;
 
   /// Returns `true` if we are currently listening for nearby devices, else `false`.
-  Stream<bool> get isListening => _isListeningStreamController.stream;
+  Stream<bool> get isListeningChanged => _isListeningStreamController.stream;
 
   /// Returns a stream of discovered peripherals.
-  Stream<Peripheral> get discoveredPeripherals =>
+  Stream<(Peripheral, int)> get discoveredPeripherals =>
       _discoveredPeripheralStreamController.stream;
 
   /// Starts listening for nearby devices advertising our service.
@@ -63,7 +64,8 @@ class BtDiscoveryService {
         if (_discoveredDevices.add(event.peripheral.uuid)) {
           _log.finest(
               'Discovered service: ${event.peripheral.uuid}, RSSI: ${event.rssi}');
-          _discoveredPeripheralStreamController.add(event.peripheral);
+          _discoveredPeripheralStreamController
+              .add((event.peripheral, event.rssi));
         }
         _log.finest(
             'Discovered known service: ${event.peripheral.uuid}, RSSI: ${event.rssi}');

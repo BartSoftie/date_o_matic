@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -15,6 +14,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'data/repositories/user_profile_repository.dart' as _i200;
 import 'data/services/bt_advertising_service.dart' as _i596;
 import 'data/services/bt_discovery_service.dart' as _i623;
+import 'data/services/hive_secure_service.dart' as _i16;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -29,10 +29,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i596.BtAdvertisingService>(() => _i596.BtAdvertisingService());
     gh.factory<_i623.BtDiscoveryService>(() => _i623.BtDiscoveryService());
-    gh.singleton<_i200.UserProfileRepository>(() => _i200.UserProfileRepository(
-          btDiscoveryService: gh<_i623.BtDiscoveryService>(),
-          btAdvertisingService: gh<_i596.BtAdvertisingService>(),
-        ));
+    gh.singleton<_i16.HiveSecureService>(() => _i16.HiveSecureService());
+    gh.singleton<_i200.UserProfileRepository>(
+      () => _i200.UserProfileRepository(
+        btDiscoveryService: gh<_i623.BtDiscoveryService>(),
+        btAdvertisingService: gh<_i596.BtAdvertisingService>(),
+      ),
+      dispose: (i) => i.dispose(),
+    );
     return this;
   }
 }

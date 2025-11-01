@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:date_o_matic/data/model/what_i_want.dart';
+import 'package:date_o_matic/data/model/matched_profile.dart';
 import 'package:date_o_matic/data/repositories/user_profile_repository.dart';
 import 'package:date_o_matic/ioc_init.dart';
 import 'package:flutter/foundation.dart';
@@ -37,8 +37,8 @@ class MainPageViewModel extends ChangeNotifier {
   bool get isOnline => _userProfileRepository.isOnline;
 
   /// Returns the list of discovered profiles.
-  UnmodifiableListView<WhatIWant> get discoveredProfiles =>
-      UnmodifiableListView(_userProfileRepository.whatTheyWantList);
+  UnmodifiableListView<MatchedProfile> get discoveredProfiles =>
+      UnmodifiableListView(_userProfileRepository.matchedProfilesList);
 
   /// Toggles the online status of the user.
   void toggleOnline() {

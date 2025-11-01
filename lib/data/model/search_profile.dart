@@ -1,49 +1,65 @@
-import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/relationship_type.dart';
+import 'package:hive/hive.dart';
 import 'package:logging/logging.dart';
+
+part 'search_profile.g.dart';
 
 /// This class contains a description of what this person is looking for. It
 /// does not contain any personal data and will be send to others on request to
 /// do the matching process.
-class WhatIWant {
+@HiveType(typeId: 1)
+class SearchProfile {
   final _log = Logger('BtState');
 
-  /// A unique identifier of the partner.
-  // TODO: generate unique UUID per device
-  late int id = Random().nextInt(1 << 32);
+  /// A unique identifier of this search profile.
+  @HiveField(0)
+  late final int profileId;
+
+  /// A unique identifier of the apps user who is searching for a match.
+  /// It can be used during matching to identify the user.
+  @HiveField(1)
+  late final int userId;
 
   /// The [RelationshipType] a person is looking for.
+  @HiveField(2)
   late final RelationshipType relationshipType;
 
   /// The [Gender] a person is looking for.
+  @HiveField(3)
   late final Gender gender;
 
   /// The person who we are looking for must not be born before this date.
+  @HiveField(4)
   late final DateTime bornFrom;
 
   /// The person who we are looking for must not be born after this date.
+  @HiveField(5)
   late final DateTime bornTill;
 
   /// Creates an unmodifyable instance of this class with the given parameters.
-  WhatIWant(
-      {required this.relationshipType,
+  SearchProfile(
+      //TODO: make profileId optional and generate it automatically
+      //use maybe two constructors. one for creating new profile with new id
+      //one for loading existing profile with given id
+      {required this.profileId,
+      required this.userId,
+      required this.relationshipType,
       required this.gender,
       required this.bornFrom,
       required this.bornTill});
 
   /// Crates an instance of this type from the given packed [Uint8List].
-  WhatIWant.fromUint8List(Uint8List data) {
+  SearchProfile.fromUint8List(Uint8List data) {
     if (data.lengthInBytes > 0) {
       var bytes =
           ByteData.view(data.buffer, data.offsetInBytes, data.lengthInBytes);
       _log.shout('WhatIWant: received data ${bytes.toString()}');
 
       if (data.lengthInBytes == 26) {
-        id = bytes.getUint64(0);
+        userId = bytes.getUint64(0);
         relationshipType = RelationshipType.values[bytes.getUint8(8)];
         gender = Gender.values[bytes.getUint8(9)];
         bornFrom = DateTime.fromMicrosecondsSinceEpoch(bytes.getInt64(10));
@@ -70,7 +86,7 @@ class WhatIWant {
   /// Returns this object as packed [Uint8List].
   Uint8List asUint8List() {
     var bytes = ByteData(26);
-    bytes.setUint64(0, id);
+    bytes.setUint64(0, userId);
     bytes.setUint8(8, relationshipType.index);
     bytes.setUint8(9, gender.index);
     bytes.setInt64(10, bornFrom.microsecondsSinceEpoch);
