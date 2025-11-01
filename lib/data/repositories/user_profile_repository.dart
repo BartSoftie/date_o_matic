@@ -29,6 +29,7 @@ class UserProfileRepository {
   final _searchProfile = SearchProfile(
     profileId: Random().nextInt(1 << 32),
     userId: Random().nextInt(1 << 32),
+    name: 'Default Profile',
     gender: Gender.female,
     relationshipType: RelationshipType.friendsWithBenefits,
     bornFrom:

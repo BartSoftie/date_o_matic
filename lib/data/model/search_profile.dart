@@ -18,6 +18,10 @@ class SearchProfile {
   @HiveField(0)
   late final int profileId;
 
+  /// The name of this search profile.
+  @HiveField(6)
+  late final String name;
+
   /// A unique identifier of the apps user who is searching for a match.
   /// It can be used during matching to identify the user.
   @HiveField(1)
@@ -46,6 +50,7 @@ class SearchProfile {
       //one for loading existing profile with given id
       {required this.profileId,
       required this.userId,
+      required this.name,
       required this.relationshipType,
       required this.gender,
       required this.bornFrom,

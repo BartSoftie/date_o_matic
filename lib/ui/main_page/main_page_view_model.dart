@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:date_o_matic/data/model/matched_profile.dart';
+import 'package:date_o_matic/data/model/user_profile.dart';
 import 'package:date_o_matic/data/repositories/user_profile_repository.dart';
 import 'package:date_o_matic/ioc_init.dart';
 import 'package:flutter/foundation.dart';
@@ -11,6 +12,9 @@ class MainPageViewModel extends ChangeNotifier {
   //final _log = Logger('BtState');
   final UserProfileRepository _userProfileRepository =
       getIt<UserProfileRepository>();
+
+  //TODO: load user profile from repository/storage
+  late UserProfile _userProfile = UserProfile();
 
   /// Creates an instance of this class
   MainPageViewModel() {
@@ -40,10 +44,19 @@ class MainPageViewModel extends ChangeNotifier {
   UnmodifiableListView<MatchedProfile> get discoveredProfiles =>
       UnmodifiableListView(_userProfileRepository.matchedProfilesList);
 
+  /// Returns the current user profile.
+  UserProfile get userProfile => _userProfile;
+
   /// Toggles the online status of the user.
   void toggleOnline() {
     _userProfileRepository.toggleOnlineStatus().then((value) {
       notifyListeners();
     });
+  }
+
+  /// Updates the user profile and notifies listeners.
+  void updateUserProfile(UserProfile updatedProfile) {
+    _userProfile = updatedProfile;
+    notifyListeners();
   }
 }

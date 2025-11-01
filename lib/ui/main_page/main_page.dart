@@ -1,18 +1,54 @@
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:date_o_matic/ui/debug_page/log_page.dart';
+import 'package:date_o_matic/ui/search_profile/search_profile_list_page.dart';
+import 'package:date_o_matic/ui/user_profile/user_profile_edit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:date_o_matic/ui/main_page/main_page_view_model.dart';
 import 'package:provider/provider.dart';
 
 /// The main page of this application
-class MainPage extends StatelessWidget {
-  final MainPageViewModel _viewModel = MainPageViewModel();
-
+class MainPage extends StatefulWidget {
   /// Creates an instance of this class
-  MainPage({super.key, required this.title});
+  const MainPage({super.key, required this.title});
 
   /// The title that is shown in the app bar
   final String title;
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage>
+    with SingleTickerProviderStateMixin {
+  final MainPageViewModel _viewModel = MainPageViewModel();
+  late AnimationController _animationController;
+  late Animation<double> _pulseAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 1. Animation Controller initialisieren
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1), // Eine Pulswelle dauert 1 Sekunde
+    )..repeat(
+        reverse: true); // Wiederholt die Animation hin und her (pulsierend)
+
+    // 2. Animation für die Skalierung (Pulsieren) von 1.0 zu 1.1 erstellen
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose(); // Wichtig: Animation Controller entsorgen
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +59,7 @@ class MainPage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: Text(title),
+              title: Text(widget.title),
             ),
             body: Center(
               child: Column(
@@ -58,6 +94,10 @@ class MainPage extends StatelessWidget {
                 BottomNavigationBarItem(
                     icon: const Icon(Icons.bug_report),
                     label: DateOMaticLocalizations.of(context)!.debug),
+                BottomNavigationBarItem(
+                    icon: const Icon(Icons.person), label: 'My Profile'),
+                BottomNavigationBarItem(
+                    icon: const Icon(Icons.person_search), label: 'Profiles'),
               ],
               onTap: (value) {
                 switch (value) {
@@ -78,24 +118,56 @@ class MainPage extends StatelessWidget {
                                 title: DateOMaticLocalizations.of(context)!
                                     .debugPageTitle)));
                     break;
+                  case 2:
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserProfileEditPage(
+                                initialProfile: viewModel.userProfile,
+                                onSave: (updatedProfile) {
+                                  viewModel.updateUserProfile(updatedProfile);
+                                  Navigator.of(context).pop();
+                                })));
+                    break;
+                  case 3:
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SearchProfileListPage()));
+                    break;
                   default:
                 }
               },
             ),
-            floatingActionButton: FloatingActionButton(
-              shape: const CircleBorder(),
-              onPressed: () {
-                viewModel.toggleOnline();
-              },
-              tooltip: 'Toggle Online/Offline',
-              //TODO: change icon based on online/offline state and do some nice animation
-              child: Icon(Icons.favorite,
-                  color: viewModel.isOnline ? Colors.red : Colors.grey),
-            ),
+            floatingActionButton: viewModel.isOnline
+                ? ScaleTransition(
+                    scale: _pulseAnimation,
+                    child: _buildFloatingActionButton(viewModel),
+                  )
+                : _buildFloatingActionButton(viewModel),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildFloatingActionButton(MainPageViewModel viewModel) {
+    return SizedBox(
+      width: 72.0,
+      height: 72.0,
+      child: FloatingActionButton(
+        shape: const CircleBorder(),
+        onPressed: () {
+          viewModel.toggleOnline();
+        },
+        tooltip: 'Toggle Online/Offline',
+        child: Icon(
+          Icons.favorite,
+          size: 36,
+          color: viewModel.isOnline ? Colors.red : Colors.grey,
+        ),
       ),
     );
   }
