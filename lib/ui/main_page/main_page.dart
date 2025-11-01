@@ -56,6 +56,8 @@ class _MainPageState extends State<MainPage>
       value: _viewModel,
       child: Consumer<MainPageViewModel>(
         builder: (context, viewModel, child) {
+          DateOMaticLocalizations localizations =
+              DateOMaticLocalizations.of(context)!;
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -65,20 +67,13 @@ class _MainPageState extends State<MainPage>
               child: Column(
                 children: [
                   Expanded(
-                    // SingleChildScrollView makes its child scrollable if the content
-                    // overflows its available space.
                     child: SingleChildScrollView(
-                      // Padding added for better visual spacing of the log text.
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
                         viewModel.discoveredProfiles
                             .map((profile) => profile.toString())
                             .join('\n\n'),
-                        // maxLines: null allows the Text widget to use as many lines
-                        // as needed, combined with SingleChildScrollView for scrolling.
                         maxLines: null,
-                        // softWrap: true ensures that the text wraps to the next line
-                        // instead of overflowing horizontally.
                         softWrap: true,
                       ),
                     ),
@@ -89,15 +84,16 @@ class _MainPageState extends State<MainPage>
             bottomNavigationBar: BottomNavigationBar(
               items: [
                 BottomNavigationBarItem(
-                    icon: const Icon(Icons.home),
-                    label: DateOMaticLocalizations.of(context)!.home),
+                    icon: const Icon(Icons.home), label: localizations.home),
                 BottomNavigationBarItem(
                     icon: const Icon(Icons.bug_report),
-                    label: DateOMaticLocalizations.of(context)!.debug),
+                    label: localizations.debug),
                 BottomNavigationBarItem(
-                    icon: const Icon(Icons.person), label: 'My Profile'),
+                    icon: const Icon(Icons.person),
+                    label: localizations.myProfile),
                 BottomNavigationBarItem(
-                    icon: const Icon(Icons.person_search), label: 'Profiles'),
+                    icon: const Icon(Icons.person_search),
+                    label: localizations.profiles),
               ],
               onTap: (value) {
                 switch (value) {
@@ -106,17 +102,15 @@ class _MainPageState extends State<MainPage>
                         context,
                         MaterialPageRoute(
                             builder: (context) => MainPage(
-                                  title: DateOMaticLocalizations.of(context)!
-                                      .mainPageTitle,
+                                  title: localizations.mainPageTitle,
                                 )));
                     break;
                   case 1:
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => LogPage(
-                                title: DateOMaticLocalizations.of(context)!
-                                    .debugPageTitle)));
+                            builder: (context) =>
+                                LogPage(title: localizations.debugPageTitle)));
                     break;
                   case 2:
                     Navigator.push(
@@ -142,9 +136,9 @@ class _MainPageState extends State<MainPage>
             floatingActionButton: viewModel.isOnline
                 ? ScaleTransition(
                     scale: _pulseAnimation,
-                    child: _buildFloatingActionButton(viewModel),
+                    child: _buildFloatingActionButton(viewModel, localizations),
                   )
-                : _buildFloatingActionButton(viewModel),
+                : _buildFloatingActionButton(viewModel, localizations),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
           );
@@ -153,7 +147,8 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-  Widget _buildFloatingActionButton(MainPageViewModel viewModel) {
+  Widget _buildFloatingActionButton(
+      MainPageViewModel viewModel, DateOMaticLocalizations localizations) {
     return SizedBox(
       width: 72.0,
       height: 72.0,
@@ -162,7 +157,7 @@ class _MainPageState extends State<MainPage>
         onPressed: () {
           viewModel.toggleOnline();
         },
-        tooltip: 'Toggle Online/Offline',
+        tooltip: localizations.toggleOnlineOfflineTooltip,
         child: Icon(
           Icons.favorite,
           size: 36,

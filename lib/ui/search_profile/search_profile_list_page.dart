@@ -1,3 +1,4 @@
+import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'search_profile_list_view_model.dart';
@@ -53,12 +54,17 @@ class _SearchProfileListPageState extends State<SearchProfileListPage> {
       value: _viewModel,
       child: Consumer<SearchProfileListViewModel>(
         builder: (context, viewModel, child) {
+          DateOMaticLocalizations localizations =
+              DateOMaticLocalizations.of(context)!;
+
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Search Profiles'),
+              title: Text(localizations.searchProfileListPageTitle),
             ),
             body: viewModel.profiles.isEmpty
-                ? const Center(child: Text('No search profiles found.'))
+                ? Center(
+                    child: Text(localizations
+                        .searchProfileListPageNoSearchProfilesFound))
                 : ListView.builder(
                     itemCount: viewModel.profiles.length,
                     itemBuilder: (context, index) {
@@ -74,8 +80,11 @@ class _SearchProfileListPageState extends State<SearchProfileListPage> {
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
-                              'Looking for: ${profile.gender.name}, ${profile.relationshipType.name}'
-                              '\nAge range: ${profile.bornFrom.year} - ${profile.bornTill.year}'),
+                              localizations.searchProfileListPageLookingFor(
+                                  profile.gender.name,
+                                  profile.relationshipType.name,
+                                  profile.bornFrom,
+                                  profile.bornTill)),
                           isThreeLine: true,
                           trailing: IconButton(
                             icon: const Icon(Icons.edit, color: Colors.blue),

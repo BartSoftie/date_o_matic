@@ -164,6 +164,169 @@ abstract class DateOMaticLocalizations {
   /// In en, this message translates to:
   /// **'Clear Log'**
   String get clearLog;
+
+  /// No description provided for @myProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My Profile'**
+  String get myProfile;
+
+  /// No description provided for @profiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Profiles'**
+  String get profiles;
+
+  /// No description provided for @toggleOnlineOfflineTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle Online/Offline'**
+  String get toggleOnlineOfflineTooltip;
+
+  /// No description provided for @searchProfileEditPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Search Profile'**
+  String get searchProfileEditPageTitle;
+
+  /// No description provided for @searchProfileEditPageProfileName.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Name'**
+  String get searchProfileEditPageProfileName;
+
+  /// No description provided for @searchProfileEditPagePleaseEnterName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a name.'**
+  String get searchProfileEditPagePleaseEnterName;
+
+  /// No description provided for @searchProfileEditPageDesiredRelationshipType.
+  ///
+  /// In en, this message translates to:
+  /// **'Desired Relationship Type'**
+  String get searchProfileEditPageDesiredRelationshipType;
+
+  /// No description provided for @searchProfileEditPageDesiredGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Desired Gender'**
+  String get searchProfileEditPageDesiredGender;
+
+  /// No description provided for @searchProfileEditPageBornFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Born From (Earliest Date)'**
+  String get searchProfileEditPageBornFrom;
+
+  /// No description provided for @searchProfileEditPageBornTill.
+  ///
+  /// In en, this message translates to:
+  /// **'Born Till (Latest Date)'**
+  String get searchProfileEditPageBornTill;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @searchProfileListPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Profiles'**
+  String get searchProfileListPageTitle;
+
+  /// No description provided for @searchProfileListPageNoSearchProfilesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No search profiles found.'**
+  String get searchProfileListPageNoSearchProfilesFound;
+
+  /// No description provided for @searchProfileListPageLookingFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for {gender}, {relationshipType}\nBorn between {bornFrom} and {bornTill}'**
+  String searchProfileListPageLookingFor(String gender, String relationshipType,
+      DateTime bornFrom, DateTime bornTill);
+
+  /// No description provided for @userProfileEditPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit User Profile'**
+  String get userProfileEditPageTitle;
+
+  /// No description provided for @userProfileEditPageProfileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'User Profile saved!'**
+  String get userProfileEditPageProfileSaved;
+
+  /// No description provided for @labelTextName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get labelTextName;
+
+  /// No description provided for @userProfileEditPagePleaseEnterName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your name.'**
+  String get userProfileEditPagePleaseEnterName;
+
+  /// No description provided for @labelTextAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get labelTextAge;
+
+  /// No description provided for @userProfileEditPagePleaseEnterAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your age.'**
+  String get userProfileEditPagePleaseEnterAge;
+
+  /// No description provided for @labelTextGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get labelTextGender;
+
+  /// No description provided for @labelTextHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Height (m)'**
+  String get labelTextHeight;
+
+  /// No description provided for @userProfileEditPagePleaseEnterHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your height.'**
+  String get userProfileEditPagePleaseEnterHeight;
+
+  /// No description provided for @labelTextWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get labelTextWeight;
+
+  /// No description provided for @userProfileEditPagePleaseEnterWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your weight.'**
+  String get userProfileEditPagePleaseEnterWeight;
+
+  /// No description provided for @userProfileEditPageHobbies.
+  ///
+  /// In en, this message translates to:
+  /// **'Hobbies (comma separated)'**
+  String get userProfileEditPageHobbies;
+
+  /// No description provided for @userProfileEditPageSaveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Profile'**
+  String get userProfileEditPageSaveProfile;
 }
 
 class _DateOMaticLocalizationsDelegate

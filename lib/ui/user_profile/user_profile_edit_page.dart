@@ -1,3 +1,4 @@
+import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/user_profile.dart';
@@ -43,7 +44,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
   }
 
   /// Validates the form, updates a new UserProfile object, and calls the onSave callback.
-  void _saveForm() {
+  void _saveForm(DateOMaticLocalizations localizations) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
@@ -58,20 +59,23 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
       widget.onSave(updatedProfile);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('User Profile saved!')),
+        SnackBar(content: Text(localizations.userProfileEditPageProfileSaved)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    DateOMaticLocalizations localizations =
+        DateOMaticLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit User Profile'),
+        title: Text(localizations.userProfileEditPageTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: _saveForm,
+            onPressed: () => _saveForm(localizations),
           ),
         ],
       ),
@@ -85,13 +89,13 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
               // 👤 Name
               TextFormField(
                 initialValue: _name,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
+                decoration: InputDecoration(
+                  labelText: localizations.labelTextName,
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name.';
+                    return localizations.userProfileEditPagePleaseEnterName;
                   }
                   return null;
                 },
@@ -103,14 +107,14 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
 
               TextFormField(
                 initialValue: _age,
-                decoration: const InputDecoration(
-                  labelText: 'Age',
+                decoration: InputDecoration(
+                  labelText: localizations.labelTextAge,
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || int.tryParse(value) == null) {
-                    return 'Please enter a valid age.';
+                    return localizations.userProfileEditPagePleaseEnterAge;
                   }
                   return null;
                 },
@@ -121,8 +125,8 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
               const SizedBox(height: 20),
 
               DropdownButtonFormField<Gender>(
-                decoration: const InputDecoration(
-                  labelText: 'Gender',
+                decoration: InputDecoration(
+                  labelText: localizations.labelTextGender,
                   border: OutlineInputBorder(),
                 ),
                 initialValue: _gender,
@@ -142,15 +146,15 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
 
               TextFormField(
                 initialValue: _height.toString(),
-                decoration: const InputDecoration(
-                  labelText: 'Height (m)',
+                decoration: InputDecoration(
+                  labelText: localizations.labelTextHeight,
                   border: OutlineInputBorder(),
                 ),
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
                 validator: (value) {
                   if (value == null || double.tryParse(value) == null) {
-                    return 'Please enter a valid height.';
+                    return localizations.userProfileEditPagePleaseEnterHeight;
                   }
                   return null;
                 },
@@ -162,15 +166,16 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
 
               TextFormField(
                 initialValue: _weight.toString(),
-                decoration: const InputDecoration(
-                  labelText: 'Weight (kg)',
+                decoration: InputDecoration(
+                  //TODO: gewicht und größe: Einheiten auf imperial/metric umstellen je nach einstellung
+                  labelText: localizations.labelTextWeight,
                   border: OutlineInputBorder(),
                 ),
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
                 validator: (value) {
                   if (value == null || double.tryParse(value) == null) {
-                    return 'Please enter a valid weight.';
+                    return localizations.userProfileEditPagePleaseEnterWeight;
                   }
                   return null;
                 },
@@ -182,8 +187,8 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
 
               TextFormField(
                 initialValue: _hobbies,
-                decoration: const InputDecoration(
-                  labelText: 'Hobbies (comma separated)',
+                decoration: InputDecoration(
+                  labelText: localizations.userProfileEditPageHobbies,
                   border: OutlineInputBorder(),
                   alignLabelWithHint: true,
                 ),
@@ -196,9 +201,9 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
 
               Center(
                 child: ElevatedButton.icon(
-                  onPressed: _saveForm,
+                  onPressed: () => _saveForm(localizations),
                   icon: const Icon(Icons.save),
-                  label: const Text('Save Profile'),
+                  label: Text(localizations.userProfileEditPageSaveProfile),
                 ),
               ),
             ],

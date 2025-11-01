@@ -43,5 +43,129 @@
     "clearLog": "Clear Log",
     "@clearLog": {
         "type": "text"
+    },
+    "myProfile": "My Profile",
+    "@myProfile": {
+        "type": "text"
+    },
+    "profiles": "Profiles",
+    "@profiles": {
+        "type": "text"
+    },
+    "toggleOnlineOfflineTooltip": "Toggle Online/Offline",
+    "@toggleOnlineOfflineTooltip": {
+        "type": "text"
+    },
+    "searchProfileEditPageTitle": "Edit Search Profile",
+    "@searchProfileEditPageTitle": {
+        "type": "text"
+    },
+    "searchProfileEditPageProfileName": "Profile Name",
+    "@searchProfileEditPageProfileName": {
+        "type": "text"
+    },
+    "searchProfileEditPagePleaseEnterName": "Please enter a name.",
+    "@searchProfileEditPagePleaseEnterName": {
+        "type": "text"
+    },
+    "searchProfileEditPageDesiredRelationshipType": "Desired Relationship Type",
+    "@searchProfileEditPageDesiredRelationshipType": {
+        "type": "text"
+    },
+    "searchProfileEditPageDesiredGender": "Desired Gender",
+    "@searchProfileEditPageDesiredGender": {
+        "type": "text"
+    },
+    "searchProfileEditPageBornFrom": "Born From (Earliest Date)",
+    "@searchProfileEditPageBornFrom": {
+        "type": "text"
+    },
+    "searchProfileEditPageBornTill": "Born Till (Latest Date)",
+    "@searchProfileEditPageBornTill": {
+        "type": "text"
+    },
+    "saveChanges": "Save Changes",
+    "@saveChanges": {
+        "type": "text"
+    },
+    "searchProfileListPageTitle": "Search Profiles",
+    "@searchProfileListPageTitle": {
+        "type": "text"
+    },
+    "searchProfileListPageNoSearchProfilesFound": "No search profiles found.",
+    "@searchProfileListPageNoSearchProfilesFound": {
+        "type": "text"
+    },
+    "searchProfileListPageLookingFor": "Looking for {gender}, {relationshipType}\nBorn between {bornFrom} and {bornTill}",
+    "@searchProfileListPageLookingFor": {
+        "type": "text",
+        "placeholders": {
+            "gender": {
+                "type": "String"
+            },
+            "relationshipType": {
+                "type": "String"
+            },
+            "bornFrom": {
+                "type": "DateTime",
+                "format": "y"
+            },
+            "bornTill": {
+                "type": "DateTime",
+                "format": "y"
+            }
+        }
+    },
+    "userProfileEditPageTitle": "Edit User Profile",
+    "@userProfileEditPageTitle": {
+        "type": "text"
+    },
+    "userProfileEditPageProfileSaved": "User Profile saved!",
+    "@userProfileEditPageProfileSaved": {
+        "type": "text"
+    },
+    "labelTextName": "Name",
+    "@labelTextName": {
+        "type": "text"
+    },
+    "userProfileEditPagePleaseEnterName": "Please enter your name.",
+    "@userProfileEditPagePleaseEnterName": {
+        "type": "text"
+    },
+    "labelTextAge": "Age",
+    "@labelTextAge": {
+        "type": "text"
+    },
+    "userProfileEditPagePleaseEnterAge": "Please enter your age.",
+    "@userProfileEditPagePleaseEnterAge": {
+        "type": "text"
+    },
+    "labelTextGender": "Gender",
+    "@labelTextGender": {
+        "type": "text"
+    },
+    "labelTextHeight": "Height (m)",
+    "@labelTextHeight": {
+        "type": "text"
+    },
+    "userProfileEditPagePleaseEnterHeight": "Please enter your height.",
+    "@userProfileEditPagePleaseEnterHeight": {
+        "type": "text"
+    },
+    "labelTextWeight": "Weight (kg)",
+    "@labelTextWeight": {
+        "type": "text"
+    },
+    "userProfileEditPagePleaseEnterWeight": "Please enter your weight.",
+    "@userProfileEditPagePleaseEnterWeight": {
+        "type": "text"
+    },
+    "userProfileEditPageHobbies": "Hobbies (comma separated)",
+    "@userProfileEditPageHobbies": {
+        "type": "text"
+    },
+    "userProfileEditPageSaveProfile": "Save Profile",
+    "@userProfileEditPageSaveProfile": {
+        "type": "text"
     }
 }

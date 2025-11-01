@@ -40,4 +40,97 @@ class DateOMaticLocalizationsEn extends DateOMaticLocalizations {
 
   @override
   String get clearLog => 'Clear Log';
+
+  @override
+  String get myProfile => 'My Profile';
+
+  @override
+  String get profiles => 'Profiles';
+
+  @override
+  String get toggleOnlineOfflineTooltip => 'Toggle Online/Offline';
+
+  @override
+  String get searchProfileEditPageTitle => 'Edit Search Profile';
+
+  @override
+  String get searchProfileEditPageProfileName => 'Profile Name';
+
+  @override
+  String get searchProfileEditPagePleaseEnterName => 'Please enter a name.';
+
+  @override
+  String get searchProfileEditPageDesiredRelationshipType =>
+      'Desired Relationship Type';
+
+  @override
+  String get searchProfileEditPageDesiredGender => 'Desired Gender';
+
+  @override
+  String get searchProfileEditPageBornFrom => 'Born From (Earliest Date)';
+
+  @override
+  String get searchProfileEditPageBornTill => 'Born Till (Latest Date)';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get searchProfileListPageTitle => 'Search Profiles';
+
+  @override
+  String get searchProfileListPageNoSearchProfilesFound =>
+      'No search profiles found.';
+
+  @override
+  String searchProfileListPageLookingFor(String gender, String relationshipType,
+      DateTime bornFrom, DateTime bornTill) {
+    final intl.DateFormat bornFromDateFormat = intl.DateFormat.y(localeName);
+    final String bornFromString = bornFromDateFormat.format(bornFrom);
+    final intl.DateFormat bornTillDateFormat = intl.DateFormat.y(localeName);
+    final String bornTillString = bornTillDateFormat.format(bornTill);
+
+    return 'Looking for $gender, $relationshipType\nBorn between $bornFromString and $bornTillString';
+  }
+
+  @override
+  String get userProfileEditPageTitle => 'Edit User Profile';
+
+  @override
+  String get userProfileEditPageProfileSaved => 'User Profile saved!';
+
+  @override
+  String get labelTextName => 'Name';
+
+  @override
+  String get userProfileEditPagePleaseEnterName => 'Please enter your name.';
+
+  @override
+  String get labelTextAge => 'Age';
+
+  @override
+  String get userProfileEditPagePleaseEnterAge => 'Please enter your age.';
+
+  @override
+  String get labelTextGender => 'Gender';
+
+  @override
+  String get labelTextHeight => 'Height (m)';
+
+  @override
+  String get userProfileEditPagePleaseEnterHeight =>
+      'Please enter your height.';
+
+  @override
+  String get labelTextWeight => 'Weight (kg)';
+
+  @override
+  String get userProfileEditPagePleaseEnterWeight =>
+      'Please enter your weight.';
+
+  @override
+  String get userProfileEditPageHobbies => 'Hobbies (comma separated)';
+
+  @override
+  String get userProfileEditPageSaveProfile => 'Save Profile';
 }

@@ -1,3 +1,4 @@
+import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/relationship_type.dart';
@@ -43,9 +44,12 @@ class _SearchProfileEditPageState extends State<SearchProfileEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    DateOMaticLocalizations localizations =
+        DateOMaticLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Search Profile'),
+        title: Text(localizations.searchProfileEditPageTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
@@ -62,13 +66,13 @@ class _SearchProfileEditPageState extends State<SearchProfileEditPage> {
             children: <Widget>[
               TextFormField(
                 initialValue: _name,
-                decoration: const InputDecoration(
-                  labelText: 'Profile Name',
+                decoration: InputDecoration(
+                  labelText: localizations.searchProfileEditPageProfileName,
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a name.';
+                    return localizations.searchProfileEditPagePleaseEnterName;
                   }
                   return null;
                 },
@@ -78,8 +82,9 @@ class _SearchProfileEditPageState extends State<SearchProfileEditPage> {
               ),
               const SizedBox(height: 20),
               DropdownButtonFormField<RelationshipType>(
-                decoration: const InputDecoration(
-                  labelText: 'Desired Relationship Type',
+                decoration: InputDecoration(
+                  labelText: localizations
+                      .searchProfileEditPageDesiredRelationshipType,
                   border: OutlineInputBorder(),
                 ),
                 initialValue: _relationshipType,
@@ -97,8 +102,8 @@ class _SearchProfileEditPageState extends State<SearchProfileEditPage> {
               ),
               const SizedBox(height: 20),
               DropdownButtonFormField<Gender>(
-                decoration: const InputDecoration(
-                  labelText: 'Desired Gender',
+                decoration: InputDecoration(
+                  labelText: localizations.searchProfileEditPageDesiredGender,
                   border: OutlineInputBorder(),
                 ),
                 initialValue: _gender,
@@ -115,7 +120,7 @@ class _SearchProfileEditPageState extends State<SearchProfileEditPage> {
                 },
               ),
               const SizedBox(height: 20),
-              const Text('Born From (Earliest Date)',
+              Text(localizations.searchProfileEditPageBornFrom,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               ListTile(
                 title: Text(
@@ -124,7 +129,7 @@ class _SearchProfileEditPageState extends State<SearchProfileEditPage> {
                 onTap: () => _selectDate(context, true),
               ),
               const Divider(),
-              const Text('Born Till (Latest Date)',
+              Text(localizations.searchProfileEditPageBornTill,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               ListTile(
                 title: Text(
@@ -138,7 +143,7 @@ class _SearchProfileEditPageState extends State<SearchProfileEditPage> {
                 child: ElevatedButton.icon(
                   onPressed: _saveForm,
                   icon: const Icon(Icons.save),
-                  label: const Text('Save Changes'),
+                  label: Text(localizations.saveChanges),
                 ),
               ),
             ],
