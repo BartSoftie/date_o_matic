@@ -10,6 +10,7 @@ import 'package:logging/logging.dart';
 @injectable
 class BtDiscoveryService {
   final _log = Logger('BtState');
+  final _centralManager = CentralManager();
   StreamSubscription? _discoverySubscription;
   bool _isListening = false;
 
@@ -54,11 +55,10 @@ class BtDiscoveryService {
       return;
     }
 
-    final centralManager = CentralManager();
-    await centralManager.startDiscovery();
+    await _centralManager.startDiscovery();
     _isListeningStreamController.add(true);
     _isListening = true;
-    _discoverySubscription = centralManager.discovered.listen((event) {
+    _discoverySubscription = _centralManager.discovered.listen((event) {
       if (event.advertisement.serviceUUIDs
           .contains(BtAdvertisingService.serviceUuid)) {
         if (_discoveredDevices.add(event.peripheral.uuid)) {
@@ -76,10 +76,9 @@ class BtDiscoveryService {
 
   /// Stops listening for nearby devices.
   Future stopListening() async {
-    final centralManager = CentralManager();
     _isListening = false;
     _isListeningStreamController.add(false);
-    await centralManager.stopDiscovery();
+    await _centralManager.stopDiscovery();
     _discoverySubscription?.cancel();
   }
 }

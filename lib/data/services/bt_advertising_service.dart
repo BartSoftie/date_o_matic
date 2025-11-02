@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
-import 'package:date_o_matic/data/model/gender.dart';
-import 'package:date_o_matic/data/model/relationship_type.dart';
 import 'package:date_o_matic/data/model/search_profile.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';

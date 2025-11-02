@@ -1,4 +1,5 @@
 import 'package:date_o_matic/data/model/gender.dart';
+import 'package:date_o_matic/data/model/matched_profile.dart';
 import 'package:date_o_matic/data/model/relationship_type.dart';
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:date_o_matic/ui/debug_page/log_page.dart';
@@ -30,14 +31,11 @@ class _MainPageState extends State<MainPage>
   void initState() {
     super.initState();
 
-    // 1. Animation Controller initialisieren
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1), // Eine Pulswelle dauert 1 Sekunde
-    )..repeat(
-        reverse: true); // Wiederholt die Animation hin und her (pulsierend)
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
 
-    // 2. Animation für die Skalierung (Pulsieren) von 1.0 zu 1.1 erstellen
     _pulseAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
       CurvedAnimation(
         parent: _animationController,
@@ -48,7 +46,7 @@ class _MainPageState extends State<MainPage>
 
   @override
   void dispose() {
-    _animationController.dispose(); // Wichtig: Animation Controller entsorgen
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -66,78 +64,14 @@ class _MainPageState extends State<MainPage>
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               title: Text(widget.title),
             ),
-            body: Center(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Builder(builder: (context) {
-                        return ListView.builder(
-                            shrinkWrap: true, // Add this line
-                            physics:
-                                const NeverScrollableScrollPhysics(), // Add this line
-                            itemBuilder: (context, index) {
-                              var item = viewModel.discoveredProfiles[index];
-                              return Card(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 16.0, vertical: 8.0),
-                                elevation: 4,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // Titel: Name des Suchprofils (mit hervorgehobenem Icon)
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.person_search,
-                                              color: Colors.indigo, size: 28),
-                                          const SizedBox(width: 10),
-                                          Text(
-                                            'blah',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const Divider(height: 20),
-
-                                      // Details in Spalten (Column)
-                                      _buildDetailRow(
-                                        icon: Icons.favorite_border,
-                                        label: 'Beziehungsziel:',
-                                        value: getLocalizedRelationshipTypeName(
-                                            item.profile.relationshipType,
-                                            localizations),
-                                      ),
-                                      _buildDetailRow(
-                                        icon: Icons.person_outline,
-                                        label: 'Gesucht wird:',
-                                        value: getLocalizedGenderName(
-                                            item.profile.gender, localizations),
-                                      ),
-                                      _buildDetailRow(
-                                        icon: Icons.cake_outlined,
-                                        label: 'Altersspanne:',
-                                        value:
-                                            '${(item.profile.bornTill.year - item.profile.bornFrom.year).abs()} Jahre',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                            itemCount: viewModel.discoveredProfiles.length);
-                      }),
-                    ),
-                  ),
-                ],
-              ),
+            body: ListView.builder(
+              padding: const EdgeInsets.only(
+                  bottom: 80), // To avoid FAB overlapping last item
+              itemBuilder: (context, index) {
+                var item = viewModel.discoveredProfiles[index];
+                return _buildProfileCard(item, localizations);
+              },
+              itemCount: viewModel.discoveredProfiles.length,
             ),
             bottomNavigationBar: BottomNavigationBar(
               items: [
@@ -201,6 +135,57 @@ class _MainPageState extends State<MainPage>
                 FloatingActionButtonLocation.centerFloat,
           );
         },
+      ),
+    );
+  }
+
+  Card _buildProfileCard(
+      MatchedProfile item, DateOMaticLocalizations localizations) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.person_search, color: Colors.indigo, size: 28),
+                const SizedBox(width: 10),
+                //TODO: introdude new type for disovered profiles
+                //give them a name as well.
+                //make the name editable so the user can give that profile a custom name
+                Text(
+                  'blah',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
+            const Divider(height: 20),
+            _buildDetailRow(
+              icon: Icons.favorite_border,
+              label: 'Beziehungsziel:',
+              value: getLocalizedRelationshipTypeName(
+                  item.profile.relationshipType, localizations),
+            ),
+            _buildDetailRow(
+              icon: Icons.person_outline,
+              label: 'Gesucht wird:',
+              value: getLocalizedGenderName(item.profile.gender, localizations),
+            ),
+            _buildDetailRow(
+              icon: Icons.cake_outlined,
+              label: 'Altersspanne:',
+              value:
+                  '${(item.profile.bornTill.year - item.profile.bornFrom.year).abs()} Jahre',
+            ),
+          ],
+        ),
       ),
     );
   }
