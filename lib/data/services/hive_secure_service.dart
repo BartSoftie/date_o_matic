@@ -14,10 +14,10 @@ import 'package:injectable/injectable.dart';
 class HiveSecureService {
   static const String _encryptionKeyName = 'hive_encryption_key';
   static const String _whatIWantBoxName = 'whatIWantBox';
-  static const String _whoIAmBoxName = 'whoIAmBox';
+  static const String _personalProfileBoxName = 'whoIAmBox';
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-  late Box<SearchProfile> _profilesBox;
-  late Box<UserProfile> _whoIAmBox;
+  late Box<SearchProfile> _searchProfilesBox;
+  late Box<UserProfile> _personalProfileBox;
   static const String _myProfileKey = 'myProfileKey';
 
   /// Initializes the Hive secure service by setting up Hive and opening the encrypted box.
@@ -30,53 +30,52 @@ class HiveSecureService {
     Hive.registerAdapter(RelationshipTypeAdapter());
 
     final encryptionKey = await _getOrCreateEncryptionKey();
-    _profilesBox = await Hive.openBox<SearchProfile>(
+    _searchProfilesBox = await Hive.openBox<SearchProfile>(
       _whatIWantBoxName,
       encryptionCipher: HiveAesCipher(encryptionKey),
     );
 
-    _whoIAmBox = await Hive.openBox<UserProfile>(
-      _whoIAmBoxName,
+    _personalProfileBox = await Hive.openBox<UserProfile>(
+      _personalProfileBoxName,
       encryptionCipher: HiveAesCipher(encryptionKey),
     );
   }
 
   /// Disposes the Hive boxes.
   void dispose() {
-    _profilesBox.close();
-    _whoIAmBox.close();
+    _searchProfilesBox.close();
+    _personalProfileBox.close();
   }
 
   /// Loads the user profile from the secure Hive box.
   UserProfile? loadUserProfile() {
-    return _whoIAmBox.get(_myProfileKey);
+    return _personalProfileBox.get(_myProfileKey);
   }
 
   /// Saves the user profile to the secure Hive box.
   Future<void> saveUserProfile(UserProfile settings) async {
-    await _whoIAmBox.put(_myProfileKey, settings);
+    await _personalProfileBox.put(_myProfileKey, settings);
   }
 
   /// Adds a new search profile to the secure Hive box.
   Future<void> addSearchProfile(SearchProfile newProfile) async {
-    int index = await _profilesBox.add(newProfile);
-    SearchProfile storedProfile = _profilesBox.getAt(index)!;
-    storedProfile.profileId = index;
-    await _profilesBox.put(index, storedProfile);
+    int index = await _searchProfilesBox.add(newProfile);
+    newProfile.profileId = index;
+    await _searchProfilesBox.put(index, newProfile);
   }
 
   /// Updates an existing search profile in the secure Hive box.
   Future<void> updateSearchProfile(SearchProfile changedProfile) async {
-    await _profilesBox.put(changedProfile.profileId, changedProfile);
+    await _searchProfilesBox.put(changedProfile.profileId, changedProfile);
   }
 
   /// Retrieves all search profiles from the secure Hive box.
-  List<SearchProfile> get searchProfiles => _profilesBox.values.toList();
+  List<SearchProfile> get searchProfiles => _searchProfilesBox.values.toList();
 
   /// Removes the search profile with the given [profileId] from the
   /// secure Hive box.
   Future<void> removeSearchProfile(int profileId) async {
-    await _profilesBox.delete(profileId);
+    await _searchProfilesBox.delete(profileId);
   }
 
   Future<Uint8List> _getOrCreateEncryptionKey() async {

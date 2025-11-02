@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:date_o_matic/data/model/user_profile.dart';
 import 'package:date_o_matic/data/services/hive_secure_service.dart';
+import 'package:date_o_matic/data/services/user_profile_service.dart';
 import 'package:date_o_matic/ioc_init.dart';
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:date_o_matic/ui/main_page/main_page.dart';
@@ -71,4 +73,6 @@ Future<void> _initializeApp() async {
 
   final HiveSecureService hiveService = getIt<HiveSecureService>();
   await hiveService.initialize();
+
+  UserProfile.userId = await getIt<UserProfileService>().generateUserId();
 }
