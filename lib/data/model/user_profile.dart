@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:date_o_matic/data/model/gender.dart';
 import 'package:hive/hive.dart';
 
@@ -7,6 +9,8 @@ part 'user_profile.g.dart';
 /// this device. It is used for the matching process.
 @HiveType(typeId: 0)
 class UserProfile {
+  static final int userId = Random().nextInt(1 << 32);
+
   /// The name of this person.
   @HiveField(0)
   String name = '';

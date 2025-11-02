@@ -1,6 +1,8 @@
 import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/matched_profile.dart';
 import 'package:date_o_matic/data/model/relationship_type.dart';
+import 'package:date_o_matic/data/model/user_profile.dart';
+import 'package:date_o_matic/ui/chat/chat_page.dart';
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:date_o_matic/ui/debug_page/log_page.dart';
 import 'package:date_o_matic/ui/search_profile/search_profile_list_page.dart';
@@ -141,6 +143,8 @@ class _MainPageState extends State<MainPage>
 
   Card _buildProfileCard(
       MatchedProfile item, DateOMaticLocalizations localizations) {
+    //TODO: make clear that this is was the other side is searching for
+    //not what the other side is
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       elevation: 4,
@@ -166,6 +170,22 @@ class _MainPageState extends State<MainPage>
                 ),
               ],
             ),
+            // Chat-Button
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: const Icon(Icons.chat, color: Colors.blue),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                            matchedProfile: item,
+                            currentUserId: UserProfile.userId)),
+                  );
+                },
+              ),
+            ),
             const Divider(height: 20),
             _buildDetailRow(
               icon: Icons.favorite_border,
@@ -182,7 +202,7 @@ class _MainPageState extends State<MainPage>
               icon: Icons.cake_outlined,
               label: 'Altersspanne:',
               value:
-                  '${(item.profile.bornTill.year - item.profile.bornFrom.year).abs()} Jahre',
+                  '${item.profile.bornTill.year} - ${item.profile.bornFrom.year}',
             ),
           ],
         ),

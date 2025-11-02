@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:date_o_matic/data/services/bt_advertising_service.dart';
-import 'package:date_o_matic/data/services/bt_discovery_service.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -9,9 +7,6 @@ import 'package:logging/logging.dart';
 class LogPageViewModel extends ChangeNotifier {
   String _logText = '';
   late final StreamSubscription _streamSubscription;
-  //TODO: pass them as parameters
-  final _advertisingService = BtAdvertisingService();
-  final _discoveryService = BtDiscoveryService();
 
   /// Creates an instance of this class
   LogPageViewModel() {
