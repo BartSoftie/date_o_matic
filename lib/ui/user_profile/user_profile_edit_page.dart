@@ -11,7 +11,7 @@ class UserProfileEditPage extends StatefulWidget {
   /// Callback function called when the user saves the changes.
   final Function(UserProfile) onSave;
 
-  ///
+  /// Creates an instance of [UserProfileEditPage].
   const UserProfileEditPage({
     super.key,
     required this.initialProfile,

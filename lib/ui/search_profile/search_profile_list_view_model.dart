@@ -1,49 +1,39 @@
+import 'package:date_o_matic/data/services/hive_secure_service.dart';
+import 'package:date_o_matic/ioc_init.dart';
 import 'package:flutter/material.dart';
 import 'package:date_o_matic/data/model/search_profile.dart';
-import 'package:date_o_matic/data/model/relationship_type.dart';
-import 'package:date_o_matic/data/model/gender.dart';
 
 /// Manages the list of SearchProfile objects and notifies listeners of changes.
 class SearchProfileListViewModel extends ChangeNotifier {
-  // Simulating initial data for demonstration purposes
-  final List<SearchProfile> _profiles = [
-    SearchProfile(
-      profileId: 1,
-      userId: 101,
-      name: 'Weekend Buddy',
-      relationshipType: RelationshipType.casual,
-      gender: Gender.female,
-      bornFrom: DateTime(1995, 1, 1),
-      bornTill: DateTime(2005, 12, 31),
-    ),
-    SearchProfile(
-      profileId: 2,
-      userId: 101,
-      name: 'Serious Relationship',
-      relationshipType: RelationshipType.serious,
-      gender: Gender.male,
-      bornFrom: DateTime(1980, 1, 1),
-      bornTill: DateTime(1994, 12, 31),
-    ),
-  ];
+  final _profileStorage = getIt<HiveSecureService>();
+  final List<SearchProfile> _profiles = [];
 
   /// Provides an unmodifiable view of the list of search profiles.
   List<SearchProfile> get profiles => List.unmodifiable(_profiles);
 
+  /// Adds a new profile to the list. (Optional for this task, but useful).
+  void addProfile(SearchProfile newProfile) async {
+    _profiles.add(newProfile);
+    await _profileStorage.addSearchProfile(newProfile);
+    notifyListeners();
+  }
+
   /// Updates an existing profile in the list based on its profileId.
   /// Notifies listeners if the update was successful.
-  void updateProfile(SearchProfile updatedProfile) {
+  void updateProfile(SearchProfile updatedProfile) async {
     final index =
         _profiles.indexWhere((p) => p.profileId == updatedProfile.profileId);
     if (index != -1) {
       _profiles[index] = updatedProfile;
+      await _profileStorage.updateSearchProfile(updatedProfile);
       notifyListeners();
     }
   }
 
-  /// Adds a new profile to the list. (Optional for this task, but useful).
-  void addProfile(SearchProfile newProfile) {
-    _profiles.add(newProfile);
+  /// Removes a profile from the list by its profileId.
+  void removeProfile(int profileId) async {
+    _profiles.removeWhere((p) => p.profileId == profileId);
+    await _profileStorage.removeSearchProfile(profileId);
     notifyListeners();
   }
 }

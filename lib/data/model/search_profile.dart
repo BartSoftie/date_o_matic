@@ -1,12 +1,16 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/relationship_type.dart';
+import 'package:date_o_matic/data/model/user_profile.dart';
 import 'package:hive/hive.dart';
 import 'package:logging/logging.dart';
 
 part 'search_profile.g.dart';
 
+//TODO: refactor model data. Use different models between stored and UI
+//use final/immutable where possible
 /// This class contains a description of what this person is looking for. It
 /// does not contain any personal data and will be send to others on request to
 /// do the matching process.
@@ -16,38 +20,35 @@ class SearchProfile {
 
   /// A unique identifier of this search profile.
   @HiveField(0)
-  late final int profileId;
+  late int profileId;
 
   /// The name of this search profile.
   @HiveField(6)
-  late final String name;
+  late String name;
 
   /// A unique identifier of the apps user who is searching for a match.
   /// It can be used during matching to identify the user.
   @HiveField(1)
-  late final int userId;
+  late int userId;
 
   /// The [RelationshipType] a person is looking for.
   @HiveField(2)
-  late final RelationshipType relationshipType;
+  late RelationshipType relationshipType;
 
   /// The [Gender] a person is looking for.
   @HiveField(3)
-  late final Gender gender;
+  late Gender gender;
 
   /// The person who we are looking for must not be born before this date.
   @HiveField(4)
-  late final DateTime bornFrom;
+  late DateTime bornFrom;
 
   /// The person who we are looking for must not be born after this date.
   @HiveField(5)
-  late final DateTime bornTill;
+  late DateTime bornTill;
 
   /// Creates an unmodifyable instance of this class with the given parameters.
   SearchProfile(
-      //TODO: make profileId optional and generate it automatically
-      //use maybe two constructors. one for creating new profile with new id
-      //one for loading existing profile with given id
       {required this.profileId,
       required this.userId,
       required this.name,
@@ -55,6 +56,18 @@ class SearchProfile {
       required this.gender,
       required this.bornFrom,
       required this.bornTill});
+
+  /// Creates a new SearchProfile with default values.
+  SearchProfile.createNewProfile()
+      : profileId = Random().nextInt(1 << 32),
+        userId = UserProfile.userId,
+        name = 'New Profile',
+        relationshipType = RelationshipType.serious,
+        //TODO: depending on user profile set gender to opposite of user profile
+        //set bornFrom and bornTill to reasonable defaults (+/- 10 years from user profile)
+        gender = Gender.diverse,
+        bornFrom = DateTime(2000, 1, 1),
+        bornTill = DateTime(2010, 12, 31);
 
   /// Crates an instance of this type from the given packed [Uint8List].
   SearchProfile.fromUint8List(Uint8List data) {

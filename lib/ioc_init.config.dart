@@ -30,8 +30,8 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i596.BtAdvertisingService>(() => _i596.BtAdvertisingService());
     gh.factory<_i623.BtDiscoveryService>(() => _i623.BtDiscoveryService());
+    gh.factory<_i1033.UserProfileService>(() => _i1033.UserProfileService());
     gh.singleton<_i16.HiveSecureService>(() => _i16.HiveSecureService());
-    gh.singleton<_i1033.UserProfileService>(() => _i1033.UserProfileService());
     gh.singleton<_i200.UserProfileRepository>(() => _i200.UserProfileRepository(
           btDiscoveryService: gh<_i623.BtDiscoveryService>(),
           btAdvertisingService: gh<_i596.BtAdvertisingService>(),

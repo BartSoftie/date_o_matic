@@ -39,6 +39,9 @@ class HiveSecureService {
       _personalProfileBoxName,
       encryptionCipher: HiveAesCipher(encryptionKey),
     );
+
+    // await _searchProfilesBox.clear();
+    // await _personalProfileBox.clear();
   }
 
   /// Disposes the Hive boxes.

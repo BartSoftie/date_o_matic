@@ -1,19 +1,18 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
-import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/matched_profile.dart';
-import 'package:date_o_matic/data/model/relationship_type.dart';
 import 'package:date_o_matic/data/model/search_profile.dart';
 import 'package:date_o_matic/data/model/user_profile.dart';
 import 'package:date_o_matic/data/services/bt_advertising_service.dart';
 import 'package:date_o_matic/data/services/bt_discovery_service.dart';
 import 'package:date_o_matic/data/services/hive_secure_service.dart';
+import 'package:date_o_matic/ioc_init.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 
+//TODO: purpose of this class is unclear. Refactor.
 /// Repository for user profile related data operations.
 @singleton
 class UserProfileRepository {
@@ -29,17 +28,7 @@ class UserProfileRepository {
   final StreamController<MatchedProfile> _profileDiscoveredController =
       StreamController<MatchedProfile>.broadcast();
 
-  final _searchProfile = SearchProfile(
-    profileId: Random().nextInt(1 << 32),
-    userId: UserProfile.userId,
-    name: 'Default Profile',
-    gender: Gender.female,
-    relationshipType: RelationshipType.friendsWithBenefits,
-    bornFrom:
-        DateTime(1973, 5, 28).copyWith(year: DateTime(1973, 5, 28).year - 10),
-    bornTill:
-        DateTime(1973, 5, 28).copyWith(year: DateTime(1973, 5, 28).year + 10),
-  );
+  SearchProfile? _searchProfile;
 
   bool _isListening = false;
   bool _isAdvertising = false;
@@ -110,8 +99,13 @@ class UserProfileRepository {
       await _btAdvertisingService.stopAdvertising();
       await _btDiscoveryService.stopListening();
     } else {
-      await _btDiscoveryService.startListening();
-      await _btAdvertisingService.startAdvertising(_searchProfile);
+      var hiveStorage = getIt<HiveSecureService>();
+      //TODO: let the user set the correct profile
+      _searchProfile = hiveStorage.searchProfiles.firstOrNull;
+      if (_searchProfile != null) {
+        await _btDiscoveryService.startListening();
+        await _btAdvertisingService.startAdvertising(_searchProfile!);
+      }
     }
   }
 

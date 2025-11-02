@@ -30,24 +30,6 @@ class _SearchProfileListPageState extends State<SearchProfileListPage> {
     super.dispose();
   }
 
-  /// Handles the navigation to the edit page and sets up the onSave callback.
-  void _editProfile(BuildContext context, SearchProfile profile) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => SearchProfileEditPage(
-          initialProfile: profile,
-          // Die onSave-Funktion ruft die updateProfile-Methode im ViewModel auf.
-          onSave: (updatedProfile) {
-            // Hier nutzen wir Provider.of, da das ViewModel bereits injectiert wurde.
-            Provider.of<SearchProfileListViewModel>(context, listen: false)
-                .updateProfile(updatedProfile);
-            Navigator.of(ctx).pop(); // Geht nach dem Speichern zurück
-          },
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
@@ -96,16 +78,47 @@ class _SearchProfileListPageState extends State<SearchProfileListPage> {
                   ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
+                _createNewProfile(context, SearchProfile.createNewProfile());
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text('Adding new profile is not yet implemented.')),
+                  const SnackBar(content: Text('New profile added.')),
                 );
               },
               child: const Icon(Icons.add),
             ),
           );
         },
+      ),
+    );
+  }
+
+  /// Handles the navigation to the edit page and sets up the onSave callback.
+  void _createNewProfile(BuildContext context, SearchProfile profile) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => SearchProfileEditPage(
+          initialProfile: profile,
+          onSave: (newProfile) {
+            Provider.of<SearchProfileListViewModel>(context, listen: false)
+                .addProfile(newProfile);
+            Navigator.of(ctx).pop();
+          },
+        ),
+      ),
+    );
+  }
+
+  /// Handles the navigation to the edit page and sets up the onSave callback.
+  void _editProfile(BuildContext context, SearchProfile profile) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => SearchProfileEditPage(
+          initialProfile: profile,
+          onSave: (updatedProfile) {
+            Provider.of<SearchProfileListViewModel>(context, listen: false)
+                .updateProfile(updatedProfile);
+            Navigator.of(ctx).pop();
+          },
+        ),
       ),
     );
   }

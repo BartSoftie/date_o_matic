@@ -10,10 +10,12 @@ class UserProfile {
   /// A unique identifier of the apps user.
   static int userId = 0;
 
+  //TODO: why the name?
   /// The name of this person.
   @HiveField(0)
   String name = '';
 
+  //TODO: use date of birth instead
   /// The age of this person.
   @HiveField(1)
   String age = '';
