@@ -1,3 +1,5 @@
+import 'package:date_o_matic/data/model/gender.dart';
+import 'package:date_o_matic/data/model/relationship_type.dart';
 import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:date_o_matic/ui/debug_page/log_page.dart';
 import 'package:date_o_matic/ui/search_profile/search_profile_list_page.dart';
@@ -69,14 +71,69 @@ class _MainPageState extends State<MainPage>
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        viewModel.discoveredProfiles
-                            .map((profile) => profile.toString())
-                            .join('\n\n'),
-                        maxLines: null,
-                        softWrap: true,
-                      ),
+                      child: Builder(builder: (context) {
+                        return ListView.builder(
+                            shrinkWrap: true, // Add this line
+                            physics:
+                                const NeverScrollableScrollPhysics(), // Add this line
+                            itemBuilder: (context, index) {
+                              var item = viewModel.discoveredProfiles[index];
+                              return Card(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 16.0, vertical: 8.0),
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Titel: Name des Suchprofils (mit hervorgehobenem Icon)
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.person_search,
+                                              color: Colors.indigo, size: 28),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            'blah',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const Divider(height: 20),
+
+                                      // Details in Spalten (Column)
+                                      _buildDetailRow(
+                                        icon: Icons.favorite_border,
+                                        label: 'Beziehungsziel:',
+                                        value: getLocalizedRelationshipTypeName(
+                                            item.profile.relationshipType,
+                                            localizations),
+                                      ),
+                                      _buildDetailRow(
+                                        icon: Icons.person_outline,
+                                        label: 'Gesucht wird:',
+                                        value: getLocalizedGenderName(
+                                            item.profile.gender, localizations),
+                                      ),
+                                      _buildDetailRow(
+                                        icon: Icons.cake_outlined,
+                                        label: 'Altersspanne:',
+                                        value:
+                                            '${(item.profile.bornTill.year - item.profile.bornFrom.year).abs()} Jahre',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: viewModel.discoveredProfiles.length);
+                      }),
                     ),
                   ),
                 ],
@@ -144,6 +201,38 @@ class _MainPageState extends State<MainPage>
                 FloatingActionButtonLocation.centerFloat,
           );
         },
+      ),
+    );
+  }
+
+  /// Helper-Methode zum Bauen einer detaillierten Zeile.
+  Widget _buildDetailRow(
+      {required IconData icon, required String label, required String value}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: Colors.grey[600]),
+          const SizedBox(width: 10),
+          SizedBox(
+            width: 120, // Feste Breite für das Label
+            child: Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontWeight: FontWeight.normal),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }
