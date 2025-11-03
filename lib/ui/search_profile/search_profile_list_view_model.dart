@@ -8,6 +8,17 @@ class SearchProfileListViewModel extends ChangeNotifier {
   final _profileStorage = getIt<HiveSecureService>();
   final List<SearchProfile> _profiles = [];
 
+  /// Creates an instance of [SearchProfileListViewModel] and loads existing profiles.
+  SearchProfileListViewModel() {
+    _loadProfiles();
+  }
+
+  void _loadProfiles() {
+    final loadedProfiles = _profileStorage.searchProfiles;
+    _profiles.addAll(loadedProfiles);
+    notifyListeners();
+  }
+
   /// Provides an unmodifiable view of the list of search profiles.
   List<SearchProfile> get profiles => List.unmodifiable(_profiles);
 

@@ -7,13 +7,8 @@ const cardColorDark = Color.fromARGB(255, 80, 90, 100);
 /// The light theme for this app
 ThemeData darkTheme = ThemeData.dark(useMaterial3: true).copyWith(
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-    // Farbe für NICHT ausgewählte Icons (Ihr Problemfall)
-    unselectedIconTheme: IconThemeData(color: Colors.black),
-
-    // Farbe für ausgewählte Icons
+    unselectedIconTheme: IconThemeData(color: Colors.white),
     selectedIconTheme: IconThemeData(color: Colors.blue),
-
-    // Farbe für Labels
     unselectedItemColor: Colors.white,
     selectedItemColor: Colors.blue,
   ),

@@ -68,9 +68,19 @@ class _SearchProfileListPageState extends State<SearchProfileListPage> {
                                   profile.bornFrom,
                                   profile.bornTill)),
                           isThreeLine: true,
-                          trailing: IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () => _editProfile(context, profile),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () => _editProfile(context, profile),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () =>
+                                    _deleteProfile(context, profile),
+                              ),
+                            ],
                           ),
                         ),
                       );
@@ -89,6 +99,11 @@ class _SearchProfileListPageState extends State<SearchProfileListPage> {
         },
       ),
     );
+  }
+
+  void _deleteProfile(BuildContext context, SearchProfile profile) {
+    Provider.of<SearchProfileListViewModel>(context, listen: false)
+        .removeProfile(profile.profileId);
   }
 
   /// Handles the navigation to the edit page and sets up the onSave callback.
