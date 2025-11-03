@@ -274,17 +274,17 @@ abstract class DateOMaticLocalizations {
   /// **'Please enter your name.'**
   String get userProfileEditPagePleaseEnterName;
 
-  /// No description provided for @labelTextAge.
+  /// No description provided for @labelTextDateOfBirth.
   ///
   /// In en, this message translates to:
-  /// **'Age'**
-  String get labelTextAge;
+  /// **'Date of Birth'**
+  String get labelTextDateOfBirth;
 
-  /// No description provided for @userProfileEditPagePleaseEnterAge.
+  /// No description provided for @userProfileEditPagePleaseEnterBirthday.
   ///
   /// In en, this message translates to:
-  /// **'Please enter your age.'**
-  String get userProfileEditPagePleaseEnterAge;
+  /// **'Please enter your birthday.'**
+  String get userProfileEditPagePleaseEnterBirthday;
 
   /// No description provided for @labelTextGender.
   ///
@@ -363,6 +363,18 @@ abstract class DateOMaticLocalizations {
   /// In en, this message translates to:
   /// **'Friends with Benefits'**
   String get friendsWithBenefits;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _DateOMaticLocalizationsDelegate

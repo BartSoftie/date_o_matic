@@ -2,6 +2,7 @@ import 'package:date_o_matic/l10n/generated/i18n/messages_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:date_o_matic/data/model/gender.dart';
 import 'package:date_o_matic/data/model/user_profile.dart';
+import 'package:intl/intl.dart';
 
 /// A StatefulWidget for displaying and editing a [UserProfile].
 class UserProfileEditPage extends StatefulWidget {
@@ -25,8 +26,7 @@ class UserProfileEditPage extends StatefulWidget {
 class _UserProfileEditPageState extends State<UserProfileEditPage> {
   final _formKey = GlobalKey<FormState>();
 
-  late String _name;
-  late String _age;
+  late DateTime _dateOfBirth;
   late Gender _gender;
   late double _height;
   late double _weight;
@@ -35,8 +35,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
   @override
   void initState() {
     super.initState();
-    _name = widget.initialProfile.name;
-    _age = widget.initialProfile.age;
+    _dateOfBirth = widget.initialProfile.dateOfBirth;
     _gender = widget.initialProfile.gender;
     _height = widget.initialProfile.height;
     _weight = widget.initialProfile.weight;
@@ -49,8 +48,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
       _formKey.currentState!.save();
 
       final updatedProfile = UserProfile()
-        ..name = _name
-        ..age = _age
+        ..dateOfBirth = _dateOfBirth
         ..gender = _gender
         ..height = _height
         ..weight = _weight
@@ -61,6 +59,42 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(localizations.userProfileEditPageProfileSaved)),
       );
+    }
+  }
+
+  Future<void> _selectDate(
+      BuildContext context, DateOMaticLocalizations localizations) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _dateOfBirth,
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      helpText: localizations.userProfileEditPagePleaseEnterBirthday,
+      cancelText: localizations.cancel,
+      confirmText: localizations.ok,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Theme.of(context).colorScheme.primary,
+              onPrimary: Theme.of(context).colorScheme.onPrimary,
+              surface: Theme.of(context).colorScheme.surface,
+              onSurface: Theme.of(context).colorScheme.onSurface,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _dateOfBirth) {
+      setState(() {
+        _dateOfBirth = picked;
+      });
     }
   }
 
@@ -86,44 +120,28 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // 👤 Name
-              TextFormField(
-                initialValue: _name,
-                decoration: InputDecoration(
-                  labelText: localizations.labelTextName,
-                  border: OutlineInputBorder(),
+              GestureDetector(
+                onTap: () => _selectDate(context, localizations),
+                child: AbsorbPointer(
+                  child: TextFormField(
+                    controller: TextEditingController(
+                      text: DateFormat.yMMMMEEEEd(localizations.localeName)
+                          .format(_dateOfBirth),
+                    ),
+                    decoration: InputDecoration(
+                      labelText: localizations.labelTextDateOfBirth,
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      return null;
+                    },
+                    onSaved: (value) {
+                      // The date is already updated by _selectDate
+                    },
+                  ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return localizations.userProfileEditPagePleaseEnterName;
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _name = value!;
-                },
               ),
               const SizedBox(height: 20),
-
-              TextFormField(
-                initialValue: _age,
-                decoration: InputDecoration(
-                  labelText: localizations.labelTextAge,
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || int.tryParse(value) == null) {
-                    return localizations.userProfileEditPagePleaseEnterAge;
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _age = value!;
-                },
-              ),
-              const SizedBox(height: 20),
-
               DropdownButtonFormField<Gender>(
                 decoration: InputDecoration(
                   labelText: localizations.labelTextGender,
@@ -143,7 +161,6 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                 },
               ),
               const SizedBox(height: 20),
-
               TextFormField(
                 initialValue: _height.toString(),
                 decoration: InputDecoration(
@@ -163,7 +180,6 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                 },
               ),
               const SizedBox(height: 20),
-
               TextFormField(
                 initialValue: _weight.toString(),
                 decoration: InputDecoration(
@@ -184,7 +200,6 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                 },
               ),
               const SizedBox(height: 20),
-
               TextFormField(
                 initialValue: _hobbies,
                 decoration: InputDecoration(
@@ -198,7 +213,6 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                 },
               ),
               const SizedBox(height: 30),
-
               Center(
                 child: ElevatedButton.icon(
                   onPressed: () => _saveForm(localizations),

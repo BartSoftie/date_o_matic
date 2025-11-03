@@ -132,12 +132,12 @@
     "@userProfileEditPagePleaseEnterName": {
         "type": "text"
     },
-    "labelTextAge": "Age",
-    "@labelTextAge": {
+    "labelTextDateOfBirth": "Date of Birth",
+    "@labelTextDateOfBirth": {
         "type": "text"
     },
-    "userProfileEditPagePleaseEnterAge": "Please enter your age.",
-    "@userProfileEditPagePleaseEnterAge": {
+    "userProfileEditPagePleaseEnterBirthday": "Please enter your birthday.",
+    "@userProfileEditPagePleaseEnterBirthday": {
         "type": "text"
     },
     "labelTextGender": "Gender",
@@ -190,6 +190,14 @@
     },
     "friendsWithBenefits": "Friends with Benefits",
     "@friendsWithBenefits": {
+        "type": "text"
+    },
+    "ok": "OK",
+    "@ok": {
+        "type": "text"
+    },
+    "cancel": "Cancel",
+    "@cancel": {
         "type": "text"
     }
 }

@@ -10,29 +10,24 @@ class UserProfile {
   /// A unique identifier of the apps user.
   static int userId = 0;
 
-  //TODO: why the name?
-  /// The name of this person.
+  /// The date of birth of this person.
   @HiveField(0)
-  String name = '';
-
-  //TODO: use date of birth instead
-  /// The age of this person.
-  @HiveField(1)
-  String age = '';
+  DateTime dateOfBirth =
+      DateTime.now().subtract(const Duration(days: 365 * 25));
 
   /// The gender of this person.
-  @HiveField(2)
+  @HiveField(1)
   Gender gender = Gender.diverse;
 
   /// The height of this person in meters.
-  @HiveField(3)
+  @HiveField(2)
   double height = 1.8;
 
   /// The weight of this person in kilograms.
-  @HiveField(4)
+  @HiveField(3)
   double weight = 80.0; //or something that describes the shape
 
   /// The hobbies of this person.
-  @HiveField(5)
+  @HiveField(4)
   String hobbies = '';
 }

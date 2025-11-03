@@ -108,11 +108,11 @@ class DateOMaticLocalizationsDe extends DateOMaticLocalizations {
       'Bitte geben Sie Ihren Namen ein.';
 
   @override
-  String get labelTextAge => 'Age';
+  String get labelTextDateOfBirth => 'Geburtsdatum';
 
   @override
-  String get userProfileEditPagePleaseEnterAge =>
-      'Bitte geben Sie Ihr Alter ein.';
+  String get userProfileEditPagePleaseEnterBirthday =>
+      'Bitte geben Sie Ihren Geburtstag ein.';
 
   @override
   String get labelTextGender => 'Geschlecht';
@@ -154,4 +154,10 @@ class DateOMaticLocalizationsDe extends DateOMaticLocalizations {
 
   @override
   String get friendsWithBenefits => 'Friends with Benefits';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get cancel => 'Abbrechen';
 }

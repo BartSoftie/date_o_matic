@@ -106,10 +106,11 @@ class DateOMaticLocalizationsEn extends DateOMaticLocalizations {
   String get userProfileEditPagePleaseEnterName => 'Please enter your name.';
 
   @override
-  String get labelTextAge => 'Age';
+  String get labelTextDateOfBirth => 'Date of Birth';
 
   @override
-  String get userProfileEditPagePleaseEnterAge => 'Please enter your age.';
+  String get userProfileEditPagePleaseEnterBirthday =>
+      'Please enter your birthday.';
 
   @override
   String get labelTextGender => 'Gender';
@@ -151,4 +152,10 @@ class DateOMaticLocalizationsEn extends DateOMaticLocalizations {
 
   @override
   String get friendsWithBenefits => 'Friends with Benefits';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get cancel => 'Cancel';
 }

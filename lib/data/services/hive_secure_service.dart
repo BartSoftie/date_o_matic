@@ -13,8 +13,8 @@ import 'package:injectable/injectable.dart';
 @singleton
 class HiveSecureService {
   static const String _encryptionKeyName = 'hive_encryption_key';
-  static const String _whatIWantBoxName = 'whatIWantBox';
-  static const String _personalProfileBoxName = 'whoIAmBox';
+  static const String _searchProfilesBoxName = 'searchProfilesBox';
+  static const String _personalProfileBoxName = 'personalProfileBox';
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   late Box<SearchProfile> _searchProfilesBox;
   late Box<UserProfile> _personalProfileBox;
@@ -31,7 +31,7 @@ class HiveSecureService {
 
     final encryptionKey = await _getOrCreateEncryptionKey();
     _searchProfilesBox = await Hive.openBox<SearchProfile>(
-      _whatIWantBoxName,
+      _searchProfilesBoxName,
       encryptionCipher: HiveAesCipher(encryptionKey),
     );
 
