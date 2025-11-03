@@ -1,3 +1,4 @@
+import 'package:date_o_matic/data/model/user_profile.dart';
 import 'package:date_o_matic/data/services/hive_secure_service.dart';
 import 'package:date_o_matic/ioc_init.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,17 @@ class SearchProfileListViewModel extends ChangeNotifier {
 
   /// Provides an unmodifiable view of the list of search profiles.
   List<SearchProfile> get profiles => List.unmodifiable(_profiles);
+
+  /// Creates a new SearchProfile based on the existing UserProfile data.
+  SearchProfile createNewProfile() {
+    //TODO: move creation logic to repository. remove the two constructors from SearchProfile
+    UserProfile? userProfile = _profileStorage.loadUserProfile();
+    if (userProfile != null) {
+      return SearchProfile.createFromUserProfile(userProfile);
+    } else {
+      return SearchProfile.createNewProfile();
+    }
+  }
 
   /// Adds a new profile to the list. (Optional for this task, but useful).
   void addProfile(SearchProfile newProfile) async {

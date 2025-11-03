@@ -56,18 +56,31 @@ class SearchProfile {
       required this.gender,
       required this.bornFrom,
       required this.bornTill});
-
+//TODO: check the date limits to be reasonable and above 18 years
   /// Creates a new SearchProfile with default values.
   SearchProfile.createNewProfile()
       : profileId = Random().nextInt(1 << 32),
         userId = UserProfile.userId,
         name = 'New Profile',
         relationshipType = RelationshipType.serious,
-        //TODO: depending on user profile set gender to opposite of user profile
-        //set bornFrom and bornTill to reasonable defaults (+/- 10 years from user profile)
         gender = Gender.diverse,
-        bornFrom = DateTime(2000, 1, 1),
-        bornTill = DateTime(2010, 12, 31);
+        bornFrom = DateTime.now().subtract(const Duration(days: 365 * 30)),
+        bornTill = DateTime.now().add(const Duration(days: 365 * 21));
+
+  /// Creates a new SearchProfile based on the given [UserProfile].
+  SearchProfile.createFromUserProfile(UserProfile userProfile)
+      : profileId = Random().nextInt(1 << 32),
+        userId = UserProfile.userId,
+        name = 'New Profile',
+        relationshipType = RelationshipType.serious,
+        gender = userProfile.gender == Gender.male
+            ? Gender.female
+            : userProfile.gender == Gender.female
+                ? Gender.male
+                : Gender.diverse,
+        bornFrom =
+            userProfile.dateOfBirth.subtract(const Duration(days: 365 * 10)),
+        bornTill = userProfile.dateOfBirth.add(const Duration(days: 365 * 10));
 
   /// Crates an instance of this type from the given packed [Uint8List].
   SearchProfile.fromUint8List(Uint8List data) {

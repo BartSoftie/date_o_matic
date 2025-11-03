@@ -88,7 +88,7 @@ class _SearchProfileListPageState extends State<SearchProfileListPage> {
                   ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                _createNewProfile(context, SearchProfile.createNewProfile());
+                _createNewProfile(context, viewModel.createNewProfile());
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('New profile added.')),
                 );
